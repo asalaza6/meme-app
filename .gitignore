@@ -1,0 +1,9 @@
+#server
+
+server/build/
+server/node_modules/
+
+#web
+
+web_client/node_modules/
+
