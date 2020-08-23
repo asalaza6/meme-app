@@ -12,9 +12,10 @@ export default class Home extends Component{
             <div style = {styles.container}>
                 <div style = {styles.title}>Welcome to Meme it 2 win it!</div>
                 <img style = {styles.image} src = "https://i.ytimg.com/vi/UZtgutRejUM/maxresdefault.jpg"></img>
-                <button onClick={()=>{this.props.history.push('/login')}} className="btn btn-success btn-block">Login</button>
-                <Link to="/login">Login</Link>
-                <button className="btn btn-success btn-block">Register</button>
+                
+                <Link className="btn btn-success btn-block" to="/login">Login</Link>
+                <Link className="btn btn-success btn-block" to="/register">Register</Link>
+                
             </div>
         )
     }

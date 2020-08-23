@@ -2,6 +2,7 @@
 
 server/build/
 server/node_modules/
+server/src/images/
 
 #web
 
