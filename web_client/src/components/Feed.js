@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Redirect, Link} from 'react-router-dom';
-import {View} from 'react';
+import {Link} from 'react-router-dom';
 import configs from '../config';
 import '../mysass.scss'
 export default class Home extends Component{
@@ -31,7 +30,7 @@ export default class Home extends Component{
                 }
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            
             for(let i = 0; i < parseRes.rows.length;i++){
                 img.comments.push(parseRes.rows[i]);
             }
@@ -58,7 +57,7 @@ export default class Home extends Component{
                 body:JSON.stringify(body)
             });
             const parseRes = await response.json();
-            //console.log(parseRes);
+            console.log(parseRes);
             
         }catch(err){
             console.log(err.message);
@@ -110,7 +109,7 @@ export default class Home extends Component{
                 <div id="feed">
                     {this.images.map((img,index)=>{return( 
                         <div className="feedContainer" key={index}>
-                            <img style = {styles.feedImage} key = {index}src={configs.images.location+img.image_id+"."+img.image_type}/>
+                            <img alt= "meme" style = {styles.feedImage} key = {index}src={configs.images.location+img.image_id+"."+img.image_type}/>
                             <div style={styles.feedButtons}>
                                 <div style={styles.feedButton} onClick={()=>{img.liked=!img.liked;this.setState({renderDummy:!this.state.renderDummy})}}>
                                     <ion-icon name="happy-outline" style={{color:img.liked?"green":"black",fontSize:"32px"}}></ion-icon>

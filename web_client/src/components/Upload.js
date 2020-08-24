@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import {Redirect, Link} from 'react-router-dom';
-import {View} from 'react';
 import configs from '../config';
 
 export default class Home extends Component{
@@ -16,7 +14,7 @@ export default class Home extends Component{
     }
     onChange(evt){
         let reader = new FileReader();
-        let preview = document.getElementById('preview');
+        
         let file = evt.target.files[0];
         this.setState({file:file});
         let that = this;
@@ -48,6 +46,7 @@ export default class Home extends Component{
                 body: JSON.stringify(body)
             });
             const parseRes = await response.json();
+            console.log(parseRes);
             alert('image successfully uploaded');
         }catch(err){
             console.log(err.message);
@@ -64,9 +63,8 @@ export default class Home extends Component{
                             <input onInput={this.onChange} accept="image/png, image/jpeg" type="file" ref={this.fileInput}/>
                         </label>
                     </form>
-                    <img src={this.state.fileURL}/>
                     <div style = {styles.imgContainer}>
-                        <img style = {styles.img} id="preview" src={this.state.preview}/>
+                        <img alt="preview" style = {styles.img} id="preview" src={this.state.preview}/>
                     </div>
                 <button onClick={this.handleSubmit}>Submit</button>
             </div>

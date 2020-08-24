@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
-import {Redirect, Link} from 'react-router-dom';
-import {View} from 'react';
+import { Link} from 'react-router-dom';
 
 export default class Home extends Component{
-    constructor(){
-        super();
-    }
+    
 
     render(){
         return(
             <div style = {styles.container}>
                 <div style = {styles.title}>Welcome to Meme it 2 win it!</div>
-                <img style = {styles.image} src = "https://i.ytimg.com/vi/UZtgutRejUM/maxresdefault.jpg"></img>
+                <img alt = "home" style = {styles.image} src = "https://i.ytimg.com/vi/UZtgutRejUM/maxresdefault.jpg"></img>
                 
                 <Link className="btn btn-success btn-block" to="/login">Login</Link>
                 <Link className="btn btn-success btn-block" to="/register">Register</Link>

@@ -5,8 +5,7 @@ const Register = ({setAuth}) =>{
 
     const [inputs, setInputs] = useState({
         email: "",
-        password: "",
-        email: ""
+        password: ""
     });
     
     const {email, password, name} = inputs;
