@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import {toast} from 'react-toastify';
 import configs from '../config';
+import { Link} from 'react-router-dom';
 
 const Dashboard = ({setAuth})=> {
     const [name, setName] = useState("");
@@ -14,7 +15,7 @@ const Dashboard = ({setAuth})=> {
                 }
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            //console.log(parseRes);
             setName(parseRes.user_name);
         }catch(err){
 
@@ -32,6 +33,7 @@ const Dashboard = ({setAuth})=> {
         <Fragment>
             <h1>Dashboard</h1>
             <h2>{name}</h2>
+            <Link className="btn btn-success btn-block" to="/">Go back to Feed</Link>
             <button className="btn btn-primary" onClick={e=>logout(e)}>Logout</button>
         </Fragment>
     )

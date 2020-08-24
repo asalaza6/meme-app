@@ -23,7 +23,7 @@ export default class Home extends Component{
         reader.addEventListener("loadend", function () {
             // convert image file to base64 string
             that.setState({preview:reader.result});
-            console.log(that.state.preview);}, false);
+            }, false);
         if(file){
             reader.readAsDataURL(file);
         }
@@ -37,7 +37,7 @@ export default class Home extends Component{
             name:this.state.file.name,
             content:this.state.preview
         }
-        console.log(body);
+        //console.log(body);
         try{
             const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard/upload`,{
                 method: "POST",
@@ -48,9 +48,9 @@ export default class Home extends Component{
                 body: JSON.stringify(body)
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            alert('image successfully uploaded');
         }catch(err){
-
+            console.log(err.message);
         }
     }
     render(){

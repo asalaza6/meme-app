@@ -39,7 +39,7 @@ function App() {
       const parseRes = await response.json();
 
       parseRes === true ? setIsAuthenticated(true):setIsAuthenticated(false);
-      console.log(parseRes);
+      //console.log(parseRes);
     }catch(err){
       console.log(err.message);
     }
@@ -67,7 +67,7 @@ function App() {
                 <Login {...props} setAuth = {setAuth}/>
               )
                 :(
-                <Redirect to = "/dashboard"/>
+                <Redirect to = "/"/>
               )
             }
           />

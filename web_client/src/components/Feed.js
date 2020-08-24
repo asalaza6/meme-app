@@ -32,12 +32,12 @@ export default class Home extends Component{
             });
             const parseRes = await response.json();
             console.log(parseRes);
-            for(let i = 0; i < parseRes.rows.length-1;i++){
+            for(let i = 0; i < parseRes.rows.length;i++){
                 img.comments.push(parseRes.rows[i]);
             }
-            console.log(img.comments);
+            //console.log(img.comments);
         }catch(err){
-            console.log(err.message);
+            //console.log(err.message);
         }
         
         this.setState({renderDummy:!this.state.renderDummy});
@@ -58,7 +58,7 @@ export default class Home extends Component{
                 body:JSON.stringify(body)
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            //console.log(parseRes);
             
         }catch(err){
             console.log(err.message);
@@ -81,7 +81,7 @@ export default class Home extends Component{
                 }
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            //console.log(parseRes);
             for(var i = 0;i<parseRes.rows.length-1;i++){
                 //temporary for liking
                 parseRes.rows[i].liked = false;

@@ -20,7 +20,7 @@ const Login = ({setAuth})=>{
 
         try{
             const body = {email,password};
-            console.log(body);
+            //console.log(body);
             const response = await fetch(`http://${configs.api.url}:${configs.api.port}/auth/login`,
                 {
                     method: "POST",
