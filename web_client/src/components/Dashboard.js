@@ -8,7 +8,7 @@ const Dashboard = ({setAuth})=> {
 
     async function getName(){
         try{
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token

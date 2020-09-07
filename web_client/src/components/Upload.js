@@ -37,7 +37,7 @@ export default class Home extends Component{
         }
         //console.log(body);
         try{
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard/upload`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/upload`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,

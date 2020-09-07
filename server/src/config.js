@@ -2,7 +2,7 @@ const DEVELOPMENT = true;
 
 const configs = {
     images: {
-        location:"src/images/"
+        location:"/var/www/memechampion.com/images/"
     },
 }
 

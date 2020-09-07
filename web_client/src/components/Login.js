@@ -21,7 +21,7 @@ const Login = ({setAuth})=>{
         try{
             const body = {email,password};
             //console.log(body);
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/auth/login`,
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/auth/login`,
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},

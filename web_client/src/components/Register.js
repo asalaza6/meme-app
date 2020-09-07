@@ -20,7 +20,7 @@ const Register = ({setAuth}) =>{
 
         try{
             const body = {email,password,name};
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/auth/register`,
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/auth/register`,
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},

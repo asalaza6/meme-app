@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "images":"http-server src/images/",
+    "images": "http-server src/images/",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -22,7 +22,7 @@ export default class Home extends Component{
     async getComments(img){
         
         try{
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard/comments`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/comments`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
@@ -48,7 +48,7 @@ export default class Home extends Component{
         }
         console.log(body);
         try{
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard/comments`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/comments`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -72,7 +72,7 @@ export default class Home extends Component{
     async getImages(){
 
         try{
-            const response = await fetch(`http://${configs.api.url}:${configs.api.port}/dashboard/images`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/images`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
