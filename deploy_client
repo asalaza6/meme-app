@@ -7,8 +7,25 @@ sudo rm -r /var/www/memechampion.com/*
 echo "clearing main directory"
 sudo mv build/* /var/www/memechampion.com/
 echo "moving build contents to main directory"
-sudo mkdir /var/www/memechampion.com/images/
-sudo chown -R ubuntu /var/www/memechampion.com/images
+cd /var/www/memechampion.com
+sudo mkdir images
+sudo chown -R ubuntu images
+
 echo "creating images directory and creating ownership"
+sudo cat > .htaccess <<- "EOF"
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /subdirectory
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule . /index.html [L]
+</IfModule>
+
+EOF
+echo "creating .htaccess file"
+
 sudo /etc/init.d/apache2 restart
 echo "restarting server"
