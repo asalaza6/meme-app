@@ -49,7 +49,7 @@ function App() {
   return (
   <Fragment>
     <Router>
-      <div className = "container">
+      <div>
         <Switch>
         <Route exact path = "/" render={props=>
               !isAuthenticated ? (

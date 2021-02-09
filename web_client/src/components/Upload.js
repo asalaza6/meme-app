@@ -1,39 +1,35 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import configs from '../config';
 
-export default class Home extends Component{
-    constructor(){
-        super();
-        this.state = {
-            file: null,
-            preview:null
-        }
-        this.fileInput = React.createRef();
-        this.onChange = this.onChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    onChange(evt){
+import {Box, Flex, Button, Input, FormLabel } from "@chakra-ui/react";
+import { Image, Stack} from "@chakra-ui/react";
+import SideMenu from './Drawer';
+const Upload = ()=>{
+    const [file,setFile] = useState(null);
+    const [preview,setPreview] = useState(null);
+
+    function onChange(evt){
         let reader = new FileReader();
         
         let file = evt.target.files[0];
-        this.setState({file:file});
-        let that = this;
+        setFile(file);
+        //console.log(file)
         reader.addEventListener("loadend", function () {
             // convert image file to base64 string
-            that.setState({preview:reader.result});
+            setPreview(reader.result);
             }, false);
         if(file){
             reader.readAsDataURL(file);
         }
     }
-    async handleSubmit(){
-        if(this.state.file === null){
+    async function handleSubmit(){
+        if(file === null){
             alert('file not chosen');
             return;
         }
         let body = {
-            name:this.state.file.name,
-            content:this.state.preview
+            name:file.name,
+            content:preview
         }
         //console.log(body);
         try{
@@ -46,53 +42,25 @@ export default class Home extends Component{
                 body: JSON.stringify(body)
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            //console.log(parseRes);
             alert('image successfully uploaded');
         }catch(err){
             console.log(err.message);
         }
     }
-    render(){
-        return(
-            <div style = {styles.container}>
-                <div style = {styles.title}>Upload</div>
-                    <form>
-                        <label>
-                            Upload a file
-                            <br/>
-                            <input onInput={this.onChange} accept="image/png, image/jpeg" type="file" ref={this.fileInput}/>
-                        </label>
-                    </form>
-                    <div style = {styles.imgContainer}>
-                        <img alt="preview" style = {styles.img} id="preview" src={this.state.preview}/>
-                    </div>
-                <button onClick={this.handleSubmit}>Submit</button>
-            </div>
-        )
-    }
+    
+    const inputRef = React.useRef();
+    return (
+        <Flex direction="column" align="center">
+            <SideMenu heading = "Upload"/>
+            <Stack maxW="700px">
+                <FormLabel>Upload Your Meme</FormLabel>
+                <Input onInput={onChange} accept="image/png, image/jpeg" type="file" ref={inputRef}/>
+                <Image alt="preview" id="preview" src={preview}/>
+                <Button p = "10px" onClick={handleSubmit}>Submit</Button>
+            </Stack>
+        </Flex>
+    )
 }
+export default Upload;
 
-const styles = {
-    container:{
-        margin:10,
-        justifyContent:"center",
-        display:"flex",
-        flexDirection:"column",
-        alignItems:"center"
-    },
-    title:{
-        fontSize:35,
-        padding:10,
-        fontWeight:600
-    },
-    imgContainer:{
-        width:"90%",
-        overflow:"hidden"
-    },
-    img:{
-        height:"auto",
-        width:"100%",
-        padding:"10px"
-    },
-
-}

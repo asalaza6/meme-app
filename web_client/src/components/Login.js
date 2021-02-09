@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import {toast} from 'react-toastify';
 import configs from '../config';
-
+import {Box, Heading, Flex, Button, Input, Stack } from "@chakra-ui/react";
 const Login = ({setAuth})=>{
     const [inputs, setInputs] = useState({
         email: "",
@@ -45,23 +45,22 @@ const Login = ({setAuth})=>{
     }
 
     return (
-        <Fragment>
-            <h1 className="text-center my-5">Login</h1>
-            <form onSubmit = {onSubmitForm}>
-                <input 
+        <Flex justify="center" h="100vh" direction="column" align="center" >
+            <Heading p = "20px">Login</Heading>
+            <Stack w="700px">
+                <Input 
                     type = "email" 
                     name="email" 
                     placeholder="email" 
-                    className="form-control my-3"
                     value={email}
                     onChange={e=>onChange(e)}
                 />
-                <input type = "password" name="password" placeholder="password" className="form-control my-3"
+                <Input type = "password" name="password" placeholder="password" 
                     value={password}
                     onChange={e=>onChange(e)}/>
-                <button className="btn btn-success btn-block">Submit</button>
-            </form>
-        </Fragment>
+                <Button onClick={onSubmitForm}>Submit</Button>
+            </Stack>
+        </Flex>
     )
 }
 

@@ -1,8 +1,9 @@
-const DEVELOPMENT = true;
+const DEVELOPMENT = false;
 
 const configs = {
+    dev: DEVELOPMENT,
     images: {
-        location:"/var/www/memechampion.com/images/"
+        location:DEVELOPMENT?"src/images/":"/var/www/memechampion.com/images/"
     },
 }
 

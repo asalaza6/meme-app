@@ -4,6 +4,7 @@ const authorization = require("../middleware/authorization");
 const configs = require('../config');
 
 router.get("/", authorization, async (req, res)=>{
+    //console.log(req.user);
     try {
 
         const user = await pool.query("SELECT * FROM users WHERE user_id = $1",[
@@ -26,13 +27,27 @@ router.get("/images", authorization, async (req, res)=>{
         res.status(500).json("Server Error");
     }
 });
+router.get("/profileimages", authorization, async (req, res)=>{
+    try {
+
+        const images = await pool.query("SELECT image_id,image_type FROM images where user_id = $1 ORDER BY create_timestamp DESC",[
+            req.user
+        ]);
+        
+        console.log(images);
+        res.json(images);
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json("Server Error");
+    }
+});
 router.get("/comments", authorization, async (req, res)=>{
     try {
 
-        const comments = await pool.query("SELECT comment_content,create_timestamp FROM comments WHERE image_id = $1 ORDER BY create_timestamp ASC",[
+        const comments = await pool.query("SELECT comment_content,create_timestamp,comment_id FROM comments WHERE image_id = $1 ORDER BY create_timestamp ASC",[
             req.header("image")
         ]);
-        
+        console.log(comments);
         res.json(comments);
     }catch(err){
         console.log(err.message);
@@ -49,7 +64,8 @@ router.post("/comments", authorization, async (req, res)=>{
         const newComment = await pool.query(
             "INSERT INTO comments (user_id,comment_content,image_id) VALUES ($1,$2,$3) RETURNING *",
             [user,content,image]);
-        res.json(newComment);
+        console.log(newComment.rows);
+        res.json(newComment.rows);
     }catch(err){
         console.log(err.message);
         res.status(500).json("Server Error");
@@ -58,6 +74,7 @@ router.post("/comments", authorization, async (req, res)=>{
 router.post("/upload",authorization, async (req, res)=>{
     try {
         //destructure body
+        console.log("req", req.user);
         let {name, content} = req.body;
 
         //format string to data and type
@@ -67,8 +84,8 @@ router.post("/upload",authorization, async (req, res)=>{
         type = type[0];
         //insert image into table
         const newImage = await pool.query(
-            "INSERT INTO images (image_name,image_type) VALUES ($1,$2) RETURNING *",
-            [name,type]);
+            "INSERT INTO images (image_name,image_type,user_id) VALUES ($1,$2,$3) RETURNING *",
+            [name,type,req.user]);
         //save image to server
         let fileName = newImage.rows[0].image_id;
         

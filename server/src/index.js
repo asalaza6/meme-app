@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 //experimental https
 const https = require('https');
 const fs = require('fs');
+const configs = require('./config');
 //
 //middleware
 // app.use(express.json());
@@ -24,12 +25,13 @@ app.listen(serverPort, ()=>{
 });
 
 //experimental https continued
-let httpsPort = 8081;
-const httpsServer = https.createServer({
-    key: fs.readFileSync('/home/ubuntu/relevant_certs/privkey.pem'),
-    cert: fs.readFileSync('/home/ubuntu/relevant_certs/fullchain.pem'),
-},app);
-httpsServer.listen(httpsPort,()=>{
-   console.log(`HTTPS Server running on port ${httpsPort}`);
-});
-//
+if(!configs.dev){
+    let httpsPort = 8081;
+    const httpsServer = https.createServer({
+        key: fs.readFileSync('/home/ubuntu/relevant_certs/privkey.pem'),
+        cert: fs.readFileSync('/home/ubuntu/relevant_certs/fullchain.pem'),
+    },app);
+    httpsServer.listen(httpsPort,()=>{
+    console.log(`HTTPS Server running on port ${httpsPort}`);
+    });
+}
