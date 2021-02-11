@@ -31,7 +31,7 @@ router.post("/register",validInfo, async (req, res) => {
             [name, email, bcryptPassword]);
         //5. generating our jwt token
         const token = jwtGenerator(newUser.rows[0].user_id);
-        console.log(req.body);
+        //console.log(req.body);
         return res.json({token});
 
     }catch(err){
@@ -60,9 +60,10 @@ router.post("/login",validInfo, async(req, res)=>{
             return res.status(401).json("Password or Email is incorrect");
         }
         //4 
-        const token = jwtGenerator(user.rows[0].user_id);
-
-        return res.json({token});
+        const user_id = user.rows[0].user_id;
+        const token = jwtGenerator(user_id);
+        //console.log(token);
+        return res.json({token,user_id});
     }catch(err){
         console.log(err.message);
         res.status(500).send("Server Error");
@@ -100,7 +101,7 @@ router.post("/changePassword",validInfo, async(req, res)=>{
 
 router.get("/verify",authorization,async (req, res)=> {
         
-    console.log("hello im here in authorization!\n");
+   // console.log("hello im here in authorization!\n");
         try {
             res.json(true);
         } catch (err) {

@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ChakraProvider } from "@chakra-ui/react";
 
-console.log('ChakraProvider', ChakraProvider);
+//console.log('ChakraProvider', ChakraProvider);
 ReactDOM.render(
   <ChakraProvider>
       <App />

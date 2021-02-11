@@ -47,7 +47,7 @@ const Register = ({setAuth}) =>{
     return (
         <Flex justify="center" h="100vh" direction="column" align="center" >
             <Heading p="20px" >Register</Heading>
-            <Stack w="700px" >
+            <Stack w="90vw" maxW="700px" >
                 <Input 
                     type = "email" 
                     name="email" 

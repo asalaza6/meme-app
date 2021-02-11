@@ -50,6 +50,7 @@ const Dashboard = ({setAuth})=> {
     const logout = (e) => {
         e.preventDefault();
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setAuth(false);
         toast.success("Logout successfully");
     }

@@ -1,6 +1,6 @@
 const DEVELOPMENT = false;
 export const DEVELOPMENT2 = true;
-const secure = true;
+const secure = DEVELOPMENT?false:true;
 /*
 development mode for images 
 run 

@@ -34,7 +34,7 @@ router.get("/profileimages", authorization, async (req, res)=>{
             req.user
         ]);
         
-        console.log(images);
+        //console.log(images);
         res.json(images);
     }catch(err){
         console.log(err.message);
@@ -44,13 +44,72 @@ router.get("/profileimages", authorization, async (req, res)=>{
 router.get("/comments", authorization, async (req, res)=>{
     try {
 
-        const comments = await pool.query("SELECT comment_content,create_timestamp,comment_id FROM comments WHERE image_id = $1 ORDER BY create_timestamp ASC",[
+        const comments = await pool.query("SELECT comment_content,create_timestamp,comment_id,user_id FROM comments WHERE image_id = $1 ORDER BY create_timestamp  DESC LIMIT $2 OFFSET $3",[
+            req.header("image"), 4, req.header("count")
+        ]);
+        const count = await pool.query("SELECT COUNT(*) FROM comments WHERE image_id = $1 ",[
             req.header("image")
         ]);
-        console.log(comments);
-        res.json(comments);
+        //console.log(comments,count);
+        res.json({comments,count});
     }catch(err){
         console.log(err.message);
+        res.status(500).json("Server Error");
+    }
+});
+router.get("/likeimage", authorization, async (req, res)=>{
+    try {
+
+        let image = req.header("image");
+        let user = req.header("user");
+        const like = await pool.query(
+            "SELECT FROM likes WHERE user_id = $1 AND image_id = $2",
+            [user,image]);
+        //console.log(like.rows.length);
+        res.json(like.rows.length>0);
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json("Server Error");
+    }
+});
+router.post("/likeimage", authorization, async (req, res)=>{
+    try {
+        let {image, liked, user} = req.body;
+        if(liked){
+            //if liked then unlike by deleting entry
+            const del = await pool.query(
+                "DELETE FROM likes WHERE user_id = $1 AND image_id = $2",
+                [user,image]);
+        }else{
+            //if not liked add entry
+            const insert = await pool.query(
+                "INSERT INTO likes (user_id,image_id) VALUES ($1,$2) RETURNING *",
+                [user,image]);
+        }
+        //console.log(user,image);
+        res.json(!liked);
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json("Server Error");
+    }
+});
+router.post("/deletecomment", authorization, async (req, res)=>{
+    try {
+        //destructure body
+        let {comment} = req.body;
+        let user = req.user;
+        //console.log(comment,user);
+        //insert new comment
+        const newComment = await pool.query(
+            "DELETE FROM comments WHERE comment_id = $1 AND user_id = $2 RETURNING *",
+            [comment,user]);
+        //console.log(newComment.rows);
+        if(!newComment.rows.length){
+            res.status(500).json("User not authorized to delete comment");
+        }
+        res.json(newComment.rows);
+    }catch(err){
+        //console.log(err.message);
         res.status(500).json("Server Error");
     }
 });
@@ -59,12 +118,12 @@ router.post("/comments", authorization, async (req, res)=>{
         //destructure body
         let {image,content} = req.body;
         let user = req.user;
-        console.log(req.body);
+        //console.log(req.body);
         //insert new comment
         const newComment = await pool.query(
             "INSERT INTO comments (user_id,comment_content,image_id) VALUES ($1,$2,$3) RETURNING *",
             [user,content,image]);
-        console.log(newComment.rows);
+        //console.log(newComment.rows);
         res.json(newComment.rows);
     }catch(err){
         console.log(err.message);
@@ -74,7 +133,7 @@ router.post("/comments", authorization, async (req, res)=>{
 router.post("/upload",authorization, async (req, res)=>{
     try {
         //destructure body
-        console.log("req", req.user);
+        //console.log("req", req.user);
         let {name, content} = req.body;
 
         //format string to data and type

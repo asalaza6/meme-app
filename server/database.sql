@@ -38,3 +38,12 @@ CREATE TABLE comments(
     comment_content VARCHAR(255) NOT NULL,
     create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2)
 );
+
+--create comments table
+
+CREATE TABLE likes(
+    like_id uuid PRIMARY KEY DEFAULT
+    uuid_generate_v4(),
+    image_id uuid NOT NULL,
+    user_id uuid NOT NULL
+);

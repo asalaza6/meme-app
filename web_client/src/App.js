@@ -52,35 +52,42 @@ function App() {
       <div>
         <Switch>
         <Route exact path = "/" render={props=>
-              !isAuthenticated ? (
-                <Home {...props}/>
-              )
-                :(
-                <Feed {...props}/>
-              )}/>
-          <Route 
-            exact 
-            path = "/login" 
-            render={props=>
-              !isAuthenticated ? (
-                <Login {...props} setAuth = {setAuth}/>
-              )
-                :(
-                <Redirect to = "/"/>
-              )
-            }
-          />
+          !isAuthenticated ? (
+            <Home {...props}/>
+          )
+            :(
+            <Feed {...props}/>
+          )
+        }/>
+        <Route 
+          exact path = "/login" 
+          render={props=>
+            !isAuthenticated ? (
+              <Login {...props} setAuth = {setAuth}/>
+            )
+              :(
+              <Redirect to = "/"/>
+            )
+          }/>
           <Route exact path = "/upload" render={props=>
-              isAuthenticated ? (
-                <Upload {...props} setAuth = {setAuth}/>
-              
-              )
-                :(
-                  <Redirect to = "/"/>
-                  )}/>
-          <Route exact path = "/register" render={props=> !isAuthenticated ?
-            <Register {...props}setAuth = {setAuth}/>:<Redirect to="/login"/>}/>
-          <Route exact path = "/dashboard" render={props=>isAuthenticated?<Dashboard {...props}setAuth = {setAuth}/>:<Redirect to="/login"/>}/>
+            isAuthenticated ? (
+              <Upload {...props} setAuth = {setAuth}/>
+            )
+            :(
+              <Redirect to = "/"/>
+            )
+          }/>
+          <Route 
+            exact path = "/register" 
+            render={props=> !isAuthenticated ?
+            <Register {...props}setAuth = {setAuth}/>:<Redirect to="/"/>
+          }/>
+          <Route exact path = "/dashboard" 
+            render={(props)=>(isAuthenticated?
+              <Dashboard {...props} setAuth = {setAuth}/>:
+              <Redirect to="/"/>)
+          }/>
+          <Route path = "/profile/:username" component={Dashboard}/>
         </Switch>
       </div>
     </Router>

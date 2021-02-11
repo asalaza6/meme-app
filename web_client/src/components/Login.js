@@ -31,7 +31,9 @@ const Login = ({setAuth})=>{
             const parseRes = await response.json();
             if(parseRes.token){
                 localStorage.setItem("token", parseRes.token);
-
+                
+                localStorage.setItem("user", parseRes.user_id);
+                console.log(parseRes);
                 setAuth(true);
                 toast.success("login successful");
             }else{
@@ -47,7 +49,7 @@ const Login = ({setAuth})=>{
     return (
         <Flex justify="center" h="100vh" direction="column" align="center" >
             <Heading p = "20px">Login</Heading>
-            <Stack w="700px">
+            <Stack w="90vw" maxW="700px">
                 <Input 
                     type = "email" 
                     name="email" 
