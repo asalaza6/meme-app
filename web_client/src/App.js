@@ -26,9 +26,13 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const setAuth = (boolean) => {
+    console.log("changing auth\n");
     setIsAuthenticated(boolean);
   }
   async function isAuth(){
+    //check if isAuthenticated is already true to avoid unnecessary fetch
+    // isAuthenticated will be resseet
+    //console.log("hello");
     try{
       const response = await fetch(`${configs.api.url}:${configs.api.port}/auth/verify`,{
         method: "GET",
@@ -36,15 +40,18 @@ function App() {
       });
 
       const parseRes = await response.json();
-
+      console.log("VErifying:", parseRes);
       parseRes === true ? setIsAuthenticated(true):setIsAuthenticated(false);
       //console.log(parseRes);
     }catch(err){
       console.log(err.message);
     }
+    return isAuthenticated;
   }
   useEffect(()=>{
+    
     isAuth();
+    console.log("useeffect",isAuthenticated);
   })
   return (
   <Fragment>
@@ -52,7 +59,7 @@ function App() {
       <div>
         <Switch>
         <Route exact path = "/" render={props=>
-          !isAuthenticated ? (
+         console.log(isAuthenticated)|| !isAuthenticated ? (
             <Home {...props}/>
           )
             :(
@@ -82,12 +89,12 @@ function App() {
             render={props=> !isAuthenticated ?
             <Register {...props}setAuth = {setAuth}/>:<Redirect to="/"/>
           }/>
-          <Route exact path = "/dashboard" 
-            render={(props)=>(isAuthenticated?
-              <Dashboard {...props} setAuth = {setAuth}/>:
-              <Redirect to="/"/>)
-          }/>
-          <Route path = "/profile/:username" component={Dashboard}/>
+          <Route path = "/dashboard" >
+                {isAuthenticated?
+              <Dashboard setAuth = {setAuth}/>:
+              <Redirect to="/"/>}
+          </Route>
+          <Route path = "/:username" component={Dashboard}/>
         </Switch>
       </div>
     </Router>

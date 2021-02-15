@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { Link} from 'react-router-dom';
-import {Box,Center,Flex, Heading, Image, Button, Input, Stack, AspectRatio } from "@chakra-ui/react";
+import {Box,Flex, Heading, Image, Button, AspectRatio } from "@chakra-ui/react";
 
 export default ()=>{
     const background = "red.100";
@@ -28,24 +28,4 @@ export default ()=>{
             </Box>
         </Flex>
     )
-}
-
-const styles = {
-    container:{
-        margin:10,
-        justifyContent:"center",
-        display:"flex",
-        flexDirection:"column",
-        alignItems:"center"
-    },
-    title:{
-        fontSize:35,
-        padding:10,
-        fontWeight:600
-    },
-    image:{
-        margin:10,
-        width:"90%"
-    },
-
 }

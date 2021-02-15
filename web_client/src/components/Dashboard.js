@@ -1,11 +1,10 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {toast} from 'react-toastify';
 import configs from '../config';
-import { Link} from 'react-router-dom';
 import Post from './Post';
-import {Box, Avatar, Heading, Text, Button, Input, Stack, Flex } from "@chakra-ui/react";
+import {Box, Avatar, Heading,  Button, Flex } from "@chakra-ui/react";
 import SideMenu from "./Drawer";
-const Dashboard = ({setAuth})=> {
+const Dashboard = ({setAuth,match})=> {
     const [name, setName] = useState("");
     const [images, setImages] = useState([]);
     async function getName(){
@@ -23,13 +22,19 @@ const Dashboard = ({setAuth})=> {
             
         }
     }
+
     async function getProfileImages(){
         let images = [];
+        let param = "";
+        if(match){
+            param = match.params.username;
+        }
         try{
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/profileimages`,{
                 method: "GET",
                 headers:{
-                    token: localStorage.token
+                    token: localStorage.token,
+                    name: param
                 }
             });
             const parseRes = await response.json();
@@ -45,8 +50,7 @@ const Dashboard = ({setAuth})=> {
         //console.log(images);
         setImages(images);
 
-    }  
-    
+    }
     const logout = (e) => {
         e.preventDefault();
         localStorage.removeItem("token");
@@ -55,20 +59,26 @@ const Dashboard = ({setAuth})=> {
         toast.success("Logout successfully");
     }
     useEffect(()=>{
-        getName();
+        if(match){
+            const {params: {username}} = match;
+            setName(username);
+        }else{
+            getName();
+        }
         getProfileImages();
-        console.log("useeffect");
+        //console.log("useeffect");
     },[]);
     return (
         <Box alignItems="center" flexDirection="column" display = "flex">
-            <SideMenu heading="Your Profile"/>
+            <SideMenu heading={name}/>
             
             <Flex direction = "column" align = "center" maxW="700px">
                 
-                <Heading color = "grey" textAlign = 'center' >{name}</Heading>
                 <Avatar p = "10px" size="2xl" name="Segun Adebayo" src="https://i.pravatar.cc/300" />{" "}
-                <Button  p = "10px" onClick={e=>logout(e)}>Logout</Button>
-                <Heading color = "grey" textAlign = 'center'>My Posts</Heading>
+                {!match?
+                    <Button  p = "10px" onClick={e=>logout(e)}>Logout</Button>
+                :null
+                }<Heading color = "grey" p = "10px" textAlign = 'center'>Posts</Heading>
                 {images.map((img,index)=>{return( 
                    <Post img={img} key={index}/>
                 )})}

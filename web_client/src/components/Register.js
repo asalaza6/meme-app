@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import configs from '../config';
 
-import {Box,Flex, Heading, Text, Button, Input, Stack } from "@chakra-ui/react";
+import {Flex, Heading, Button, Input, Stack } from "@chakra-ui/react";
 const Register = ({setAuth}) =>{
 
     const [inputs, setInputs] = useState({

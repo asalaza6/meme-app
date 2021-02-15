@@ -29,11 +29,17 @@ router.get("/images", authorization, async (req, res)=>{
 });
 router.get("/profileimages", authorization, async (req, res)=>{
     try {
-
+        let id = req.user;
+        if(req.header("name")){
+            id = (await pool.query("SELECT user_id FROM users WHERE user_name = $1",[
+                req.header("name")
+            ])).rows[0].user_id;
+            console.log(id);
+        }
         const images = await pool.query("SELECT image_id,image_type FROM images where user_id = $1 ORDER BY create_timestamp DESC",[
-            req.user
+            id
         ]);
-        
+        //console.log(images);
         //console.log(images);
         res.json(images);
     }catch(err){
@@ -52,6 +58,17 @@ router.get("/comments", authorization, async (req, res)=>{
         ]);
         //console.log(comments,count);
         res.json({comments,count});
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json("Server Error");
+    }
+});
+router.get("/searchusers", authorization, async (req, res)=>{
+    console.log("searching users", req.header("search"));
+    try {
+
+        const users = await pool.query(`SELECT user_id,user_name FROM users WHERE user_name LIKE '${req.header("search")}%'`);
+        res.json(users.rows);
     }catch(err){
         console.log(err.message);
         res.status(500).json("Server Error");

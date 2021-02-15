@@ -1,4 +1,4 @@
-const DEVELOPMENT = false;
+const DEVELOPMENT = true;
 export const DEVELOPMENT2 = true;
 const secure = DEVELOPMENT?false:true;
 /*

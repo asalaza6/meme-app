@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import configs from '../config';
-import compress from 'compress.js';
-import {Box, Flex, Button, Input, FormLabel } from "@chakra-ui/react";
+// import compress from 'compress.js';
+import {Flex, Button, Input, FormLabel } from "@chakra-ui/react";
 import { Image, Stack} from "@chakra-ui/react";
 import SideMenu from './Drawer';
 const Upload = ()=>{
@@ -17,7 +17,6 @@ const Upload = ()=>{
         //console.log(file)
         reader.addEventListener("loadend", function () {
             // convert image file to base64 string
-            var content = reader.result;
             setPreview(reader.result);
 
             }, false);

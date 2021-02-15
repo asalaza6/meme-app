@@ -1,12 +1,11 @@
 import React, {useState,useEffect} from 'react';
 import configs from '../config';
-import {Image,Box, Button, Drawer, Flex, Stack} from "@chakra-ui/react";
+import {Box, Stack} from "@chakra-ui/react";
 import SideMenu from './Drawer';
 import Post from './Post';
 const Feed = ()=>{
     //test function for getting comments
     const [images, setImages] = useState([]);
-    const [comments, openComments] = useState(false);
     
     //will replace above function with database working fetch
     async function getImages(){
@@ -21,10 +20,6 @@ const Feed = ()=>{
             const parseRes = await response.json();
             //console.log(parseRes);
             for(var i = 0;i<parseRes.rows.length;i++){
-                //temporary for liking
-                parseRes.rows[i].liked = false;
-                parseRes.rows[i].comment = false;
-                parseRes.rows[i].comments = [];
                 //will add to database later
                 images.push(parseRes.rows[i]);
             }

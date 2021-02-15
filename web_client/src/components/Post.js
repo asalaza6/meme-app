@@ -1,9 +1,8 @@
 
-import React, { Fragment, useEffect, useState } from "react";
-import { Link} from 'react-router-dom';
+import React, {  useEffect, useState } from "react";
 import configs from '../config';
 import {Box,Input,  Flex, Button, Image } from "@chakra-ui/react";
-import { Avatar, Text, DrawerOverlay,DrawerFooter, DrawerBody,DrawerCloseButton,DrawerHeader,DrawerContent, Heading, IconButton, Stack, useDisclosure } from "@chakra-ui/react";
+import { Avatar, Text, IconButton, Stack} from "@chakra-ui/react";
 import {DeleteIcon, ChatIcon, CheckIcon} from "@chakra-ui/icons";
 const Post = ({img,index})=>{
     const [comment, openComment] = useState(false);
@@ -13,13 +12,13 @@ const Post = ({img,index})=>{
     async function getComments(img){
         
         try{
-            const count = comments.length;
+            const length = comments.length;
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/comments`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
                     image:img.image_id,
-                    count, count
+                    count: length
                 }
             });
             const parseRes = await response.json();
@@ -49,7 +48,7 @@ const Post = ({img,index})=>{
             });
             const parseRes = await response.json();
            // console.log(parseRes);
-            updateLike(parseRes);
+            updateLike(parseRes); 
             //console.log(img.comments);
         }catch(err){
 
@@ -115,7 +114,7 @@ const Post = ({img,index})=>{
         //console.log(comments,comment);
         //remove off memory
         for(var i=0; i< comments.length;i++){
-            if(comments[i].comment_id == comment.comment_id){
+            if(comments[i].comment_id === comment.comment_id){
                 
                 //console.log(i,comments[i].comment_content);
                 comments.splice(i,1);
@@ -167,7 +166,7 @@ const Post = ({img,index})=>{
                     icon={<ChatIcon/>}
                     onClick={()=>{
                         openComment(!comment);
-                        if(comments.length==0){
+                        if(comments.length===0){
                             getComments(img)
                         }
                     }}
@@ -191,7 +190,7 @@ const Post = ({img,index})=>{
                             <Text flex={9}>
                                 {comment.comment_content}
                             </Text>
-                            {localStorage.user == comment.user_id?
+                            {localStorage.user === comment.user_id?
                             <IconButton
                                 onClick={()=>{deleteComment(comment)}}
                                 aria-label="Delete"
@@ -199,7 +198,7 @@ const Post = ({img,index})=>{
                                 />:null}
                         </Flex>
                     )})}
-                    {commentsLeft!= 0?
+                    {commentsLeft!== 0?
                     <Button variant="link" onClick={()=>{
                         getComments(img);
                     }}>Show more comments</Button>:null}
