@@ -23,7 +23,8 @@ const SideMenu = ({heading})=>{
                 }
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            
+            //console.log(parseRes);
             setUsers(parseRes);
             //console.log(parseRes);
             //setName(parseRes.user_name);

@@ -12,6 +12,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Dashboard from "./components/Dashboard";
+import Dashboard2 from "./components/Dashboard2";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from './components/Home';
@@ -26,7 +27,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const setAuth = (boolean) => {
-    console.log("changing auth\n");
     setIsAuthenticated(boolean);
   }
   async function isAuth(){
@@ -40,7 +40,6 @@ function App() {
       });
 
       const parseRes = await response.json();
-      console.log("VErifying:", parseRes);
       parseRes === true ? setIsAuthenticated(true):setIsAuthenticated(false);
       //console.log(parseRes);
     }catch(err){
@@ -51,7 +50,6 @@ function App() {
   useEffect(()=>{
     
     isAuth();
-    console.log("useeffect",isAuthenticated);
   })
   return (
   <Fragment>
@@ -59,7 +57,7 @@ function App() {
       <div>
         <Switch>
         <Route exact path = "/" render={props=>
-         console.log(isAuthenticated)|| !isAuthenticated ? (
+          !isAuthenticated ? (
             <Home {...props}/>
           )
             :(
@@ -94,7 +92,7 @@ function App() {
               <Dashboard setAuth = {setAuth}/>:
               <Redirect to="/"/>}
           </Route>
-          <Route path = "/:username" component={Dashboard}/>
+          <Route path = "/:username" component={Dashboard2}/>
         </Switch>
       </div>
     </Router>

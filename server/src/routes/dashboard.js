@@ -20,10 +20,10 @@ router.get("/images", authorization, async (req, res)=>{
     try {
 
         const images = await pool.query("SELECT image_id,image_type FROM images ORDER BY create_timestamp DESC");
-        // console.log(images);
+         console.log("images");
         res.json(images);
     }catch(err){
-        console.log(err.message);
+        console.log("images",err.message);
         res.status(500).json("Server Error");
     }
 });
@@ -76,7 +76,7 @@ router.get("/searchusers", authorization, async (req, res)=>{
 });
 router.get("/likeimage", authorization, async (req, res)=>{
     try {
-
+        
         let image = req.header("image");
         let user = req.header("user");
         const like = await pool.query(
