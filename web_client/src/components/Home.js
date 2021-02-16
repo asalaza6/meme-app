@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link} from 'react-router-dom';
-import {Box,Flex, Heading, Image, Button, AspectRatio } from "@chakra-ui/react";
+import {Box,Flex, Text, Heading, Image, Button, AspectRatio } from "@chakra-ui/react";
 
 export default ()=>{
     const background = "red.100";
@@ -10,9 +10,10 @@ export default ()=>{
             <Box 
                 w = "100vw"
                 bgGradient={bgGradient}
-                h ="100px"/>
-            <Box maxW="700px"align="center"p ="50px" direction="column">
+                h ="75px"/>
+            <Box maxW="700px"align="center" direction="column">
                 <Heading p="20px" color="black">Meme Champion: Join the Fun!</Heading>
+	    	<Text p="20px">Currently in Alpha Development: Check regularly for updates!</Text>
                 <AspectRatio  ratio={4/3}>
                     <Image alt = "home" src = "https://i.ytimg.com/vi/UZtgutRejUM/maxresdefault.jpg"></Image>
                 </AspectRatio>

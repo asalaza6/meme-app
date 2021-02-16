@@ -3,13 +3,17 @@ cd web_client
 npm install
 npm run build
 echo "created build"
+sudo mv /var/www/memechampion.com/images /var/www/images
+echo "moving old images into safe folder"
 sudo rm -r /var/www/memechampion.com/*
 echo "clearing main directory"
 sudo mv build/* /var/www/memechampion.com/
 echo "moving build contents to main directory"
+sudo mv /var/www/images /var/www/memechampion.com/images
+echo "moving back images into correct folder"
+sudo chown -R ubuntu /var/www/memechampion.com/images
+echo "making permisions correct"
 cd /var/www/memechampion.com
-sudo mkdir images
-sudo chown -R ubuntu images
 
 echo "creating images directory and creating ownership"
 sudo cat > .htaccess <<- "EOF"
