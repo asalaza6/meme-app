@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import configs from '../config';
+import {toast} from 'react-toastify';
+
 // import compress from 'compress.js';
 import {Flex, Button, Input, FormLabel } from "@chakra-ui/react";
 import { Image, Stack} from "@chakra-ui/react";
@@ -45,7 +47,10 @@ const Upload = ()=>{
             });
             const parseRes = await response.json();
             //console.log(parseRes);
-            alert('image successfully uploaded');
+            setPreview(null);
+            setFile(null);
+            toast.success("Upload successful!");
+
         }catch(err){
             console.log(err.message);
         }
@@ -58,7 +63,7 @@ const Upload = ()=>{
             <Stack maxW="700px">
                 <FormLabel>Upload Your Meme</FormLabel>
                 <Input onInput={onChange} accept="image/png, image/jpeg" type="file" ref={inputRef}/>
-                <Image alt="preview" id="preview" src={preview}/>
+                {preview?<Image alt="preview" id="preview" src={preview}/>:null}
                 <Button p = "10px" onClick={handleSubmit}>Submit</Button>
             </Stack>
         </Flex>

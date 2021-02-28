@@ -7,7 +7,7 @@ const Feed = ()=>{
     //test function for getting comments
     const [images, setImages] = useState([]);
     const [imagesLeft,updateImagesLeft] = useState(0);
-    
+    const [wait, setWait] = useState(0);
     //will replace above function with database working fetch
     async function getImages(){
         // let images = [];
@@ -29,7 +29,12 @@ const Feed = ()=>{
             
             setImages([...images]);
             var left = parseRes.count.rows[0].count-images.length;
+            //console.log(left);
             updateImagesLeft(left);
+            if(left<=0 ){
+                //console.log(imagesLeft);
+                window.removeEventListener('scroll',scroll);
+            }
         }catch(err){
             console.log(err.message);
         }
@@ -39,14 +44,9 @@ const Feed = ()=>{
         var totalHeight =  e.target.scrollingElement.scrollHeight;
         var top =    e.target.scrollingElement.scrollTop;
         var height = e.target.scrollingElement.clientHeight
-        if(top>(totalHeight-height)/2){
+        if(top>3*(totalHeight-height)/4){
             getImages();
-            if(imagesLeft==0){
-                window.removeEventListener('scroll',scroll);
-            }
-            // console.log(totalHeight, top, height);
         }
-    
     }
     useEffect(()=>{
         getImages();
