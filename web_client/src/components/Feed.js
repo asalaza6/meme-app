@@ -3,12 +3,24 @@ import configs from '../config';
 import {Box, Stack, Button} from "@chakra-ui/react";
 import SideMenu from './Drawer';
 import Post from './Post';
+class AsyncLock {
+    constructor () {
+      this.disable = () => {}
+      this.promise = Promise.resolve();
+
+    }
+    enable () {
+      this.promise = new Promise(resolve => this.disable = resolve)
+    }
+  }
 const Feed = ()=>{
     //test function for getting comments
     const [images, setImages] = useState([]);
     const [imagesLeft,updateImagesLeft] = useState(0);
-    const [wait, setWait] = useState(0);
+    const [c, updateC] = useState(0);
     //will replace above function with database working fetch
+    
+    var locked = false;
     async function getImages(){
         // let images = [];
         try{
@@ -35,21 +47,29 @@ const Feed = ()=>{
                 //console.log(imagesLeft);
                 window.removeEventListener('scroll',scroll);
             }
+            // console.log("inside");
         }catch(err){
             console.log(err.message);
         }
         
     }  
     async function scroll(e){
+        if(locked){
+            return
+        }
+        locked=true;
         var totalHeight =  e.target.scrollingElement.scrollHeight;
         var top =    e.target.scrollingElement.scrollTop;
         var height = e.target.scrollingElement.clientHeight
         if(top>3*(totalHeight-height)/4){
-            getImages();
+            await getImages();
+            
+            // console.log("retrieving");
         }
+        locked=false;
     }
     useEffect(()=>{
-        getImages();
+        getImages()
         window.addEventListener('scroll',scroll);
     },[]);
     return(
