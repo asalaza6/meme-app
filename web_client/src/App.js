@@ -19,6 +19,9 @@ import Home from './components/Home';
 import Feed from './components/Feed';
 import Upload from './components/Upload';
 import configs from './config';
+import Popular from './components/Popular';
+import Contests from './components/Contests';
+import Rankings from './components/Rankings';
 
 toast.configure()
 
@@ -82,11 +85,36 @@ function App() {
               <Redirect to = "/"/>
             )
           }/>
+          <Route exact path = "/popular" render={props=>
+            isAuthenticated ? (
+              <Popular {...props} setAuth = {setAuth}/>
+            )
+            :(
+              <Redirect to = "/"/>
+            )
+          }/>
+          <Route exact path = "/rankings" render={props=>
+            isAuthenticated ? (
+              <Rankings {...props} setAuth = {setAuth}/>
+            )
+            :(
+              <Redirect to = "/"/>
+            )
+          }/>
+          <Route exact path = "/contests" render={props=>
+            isAuthenticated ? (
+              <Contests {...props} setAuth = {setAuth}/>
+            )
+            :(
+              <Redirect to = "/"/>
+            )
+          }/>
           <Route 
             exact path = "/register" 
             render={props=> !isAuthenticated ?
-            <Register {...props}setAuth = {setAuth}/>:<Redirect to="/"/>
+            <Register {...props} setAuth = {setAuth}/>:<Redirect to="/"/>
           }/>
+          
           <Route path = "/dashboard" >
                 {isAuthenticated?
               <Dashboard setAuth = {setAuth}/>:

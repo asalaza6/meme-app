@@ -64,10 +64,10 @@ const SideMenu = ({heading})=>{
                             <Link  to="/">
                                 <Button variant="ghost" w = "100%" textAlign="left">Your Feed</Button>
                             </Link>
-                            <Link  to="/">
+                            <Link  to="/popular">
                                 <Button variant="ghost" w = "100%" textAlign="left">Popular</Button>
                             </Link>
-                            <Link  to="/">
+                            <Link  to="/rankings">
                                 <Button variant="ghost" w = "100%" textAlign="left">Champion Rankings</Button>
                             </Link>
                             <Link  to="/dashboard">
@@ -77,7 +77,7 @@ const SideMenu = ({heading})=>{
                                 <Button variant="ghost" w = "100%" textAlign="left">Upload A New Meme</Button>
                             </Link>
                             
-                            <Link  to="/">
+                            <Link  to="/contests">
                                 <Button variant="ghost" w = "100%" textAlign="left">Contests</Button>
                             </Link>
                             <Box h="20px"></Box>

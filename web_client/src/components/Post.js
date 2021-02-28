@@ -4,6 +4,8 @@ import configs from '../config';
 import {Box,Input,  Flex, Button, Image } from "@chakra-ui/react";
 import { Avatar, Text, IconButton, Stack} from "@chakra-ui/react";
 import {DeleteIcon, ChatIcon, CheckIcon} from "@chakra-ui/icons";
+
+import {Link } from 'react-router-dom';
 const Post = ({img,index})=>{
     const [comment, openComment] = useState(false);
     const [comments, addComments] = useState([]);
@@ -23,7 +25,7 @@ const Post = ({img,index})=>{
                 }
             });
             const parseRes = await response.json();
-            //console.log(parseRes);
+            // console.log(parseRes);
             for(let i = 0; i < parseRes.comments.rows.length;i++){
                 comments.push(parseRes.comments.rows[i]);
             }
@@ -82,6 +84,7 @@ const Post = ({img,index})=>{
           
     }
     async function addComment(img,content){
+        // console.log(localStorage);
         let body = {
             image: img.image_id,
             content: content
@@ -108,7 +111,8 @@ const Post = ({img,index})=>{
             comment_content:content,
             create_timestamp:"right now",
             comment_id: id,
-            user_id:localStorage.user
+            user_id:localStorage.user,
+            user_name:"you"
         });
         addComments([...comments]);
     }
@@ -186,15 +190,20 @@ const Post = ({img,index})=>{
                     </Flex>
                     {comments.map((comment,index)=>{
                         return(
-                        <Flex align="center" justify="space-between" direction = "row" key = {index}>
-                            <Box flex={1} justifyContent="center">
-                                <Avatar   size="sm" name="Segun Adebayo" src="https://i.pravatar.cc/300" />{" "}
-                            </Box>
-                            <Text flex={9}>
+                        <Flex  align="center" justify="space-between" direction = "row" key = {index}>
+                            <Link key = {index} to ={"/"+comment.user_name}>
+                                <Box flex={1} justifyContent="center">
+                                    <Avatar size="sm" name="Segun Adebayo" src="https://i.pravatar.cc/300" />{" "}
+                                    <Text wrap="wrap" fontSize="xs">{comment.user_name}</Text>
+                                </Box>
+                            </Link>
+                            
+                            <Text overflowWrap="break-word" flex={9}  flexWrap="wrap"  fontSize="xs"   m="5px">
                                 {comment.comment_content}
                             </Text>
                             {localStorage.user === comment.user_id?
                             <IconButton
+                            
                                 onClick={()=>{deleteComment(comment)}}
                                 aria-label="Delete"
                                 icon={<DeleteIcon/>}

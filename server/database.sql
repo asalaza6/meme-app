@@ -35,6 +35,7 @@ CREATE TABLE comments(
     uuid_generate_v4(),
     image_id uuid NOT NULL,
     user_id VARCHAR(255) NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
     comment_content VARCHAR(255) NOT NULL,
     create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2)
 );

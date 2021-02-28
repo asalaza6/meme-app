@@ -34,7 +34,7 @@ class Post extends React.Component {//({img,index})=>
                 }
             });
             const parseRes = await response.json();
-            //console.log(parseRes);
+            // console.log(parseRes);
             for(let i = 0; i < parseRes.comments.rows.length;i++){
                 this.state.comments.push(parseRes.comments.rows[i]);
             }

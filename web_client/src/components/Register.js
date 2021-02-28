@@ -7,10 +7,11 @@ const Register = ({setAuth}) =>{
 
     const [inputs, setInputs] = useState({
         email: "",
-        password: ""
+        password: "",
+        confirm: ""
     });
     
-    const {email, password, name} = inputs;
+    const {email, password, name, confirm} = inputs;
 
     const onChange = (e)=>{
         setInputs({...inputs,[e.target.name]
@@ -19,7 +20,10 @@ const Register = ({setAuth}) =>{
 
     const onSubmitForm = async (e)=>{
         e.preventDefault();
-
+        if(confirm != password){
+            toast.error("Passwords don't match");
+            return;
+        }
         try{
             const body = {email,password,name};
             const response = await fetch(`${configs.api.url}:${configs.api.port}/auth/register`,
@@ -56,11 +60,14 @@ const Register = ({setAuth}) =>{
                     value={email}
                     onChange={e=>onChange(e)}
                 />
+                <Input type = "text" name="name" placeholder="username" 
+                    value={name}
+                    onChange={e=>onChange(e)}/>
                 <Input type = "password" name="password" placeholder="password" 
                     value={password}
                     onChange={e=>onChange(e)}/>
-                <Input type = "text" name="name" placeholder="name" 
-                    value={name}
+                <Input type = "password" name="confirm" placeholder="confirm password" 
+                    value={confirm}
                     onChange={e=>onChange(e)}/>
                 <Button onClick={onSubmitForm}>Submit</Button>
             </Stack>

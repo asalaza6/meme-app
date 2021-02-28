@@ -18,10 +18,15 @@ router.get("/", authorization, async (req, res)=>{
 });
 router.get("/images", authorization, async (req, res)=>{
     try {
-
-        const images = await pool.query("SELECT image_id,image_type FROM images ORDER BY create_timestamp DESC");
-         console.log("images");
-        res.json(images);
+        
+        //console.log("images");
+        const images = await pool.query("SELECT image_id,image_type FROM images ORDER BY create_timestamp DESC LIMIT $1 OFFSET $2",[
+            4, req.header("count")
+        ]);
+        const count = await pool.query("SELECT COUNT(*) FROM images");
+        
+        //console.log("images");
+        res.json({images,count});
     }catch(err){
         console.log("images",err.message);
         res.status(500).json("Server Error");
@@ -34,7 +39,7 @@ router.get("/profileimages", authorization, async (req, res)=>{
             id = (await pool.query("SELECT user_id FROM users WHERE user_name = $1",[
                 req.header("name")
             ])).rows[0].user_id;
-            console.log(id);
+            //console.log(id);
         }
         const images = await pool.query("SELECT image_id,image_type FROM images where user_id = $1 ORDER BY create_timestamp DESC",[
             id
@@ -50,7 +55,7 @@ router.get("/profileimages", authorization, async (req, res)=>{
 router.get("/comments", authorization, async (req, res)=>{
     try {
 
-        const comments = await pool.query("SELECT comment_content,create_timestamp,comment_id,user_id FROM comments WHERE image_id = $1 ORDER BY create_timestamp  DESC LIMIT $2 OFFSET $3",[
+        const comments = await pool.query("SELECT comment_content,create_timestamp,comment_id,user_id,user_name FROM comments WHERE image_id = $1 ORDER BY create_timestamp  DESC LIMIT $2 OFFSET $3",[
             req.header("image"), 4, req.header("count")
         ]);
         const count = await pool.query("SELECT COUNT(*) FROM comments WHERE image_id = $1 ",[
@@ -64,10 +69,11 @@ router.get("/comments", authorization, async (req, res)=>{
     }
 });
 router.get("/searchusers", authorization, async (req, res)=>{
-    console.log("searching users", req.header("search"));
+    //console.log("searching users", req.header("search"));
+    
     try {
 
-        const users = await pool.query(`SELECT user_id,user_name FROM users WHERE user_name LIKE '${req.header("search")}%'`);
+        const users = await pool.query(`SELECT user_id,user_name FROM users WHERE user_name LIKE '${req.header("search").toLowerCase()}%'`);
         res.json(users.rows);
     }catch(err){
         console.log(err.message);
@@ -76,7 +82,6 @@ router.get("/searchusers", authorization, async (req, res)=>{
 });
 router.get("/likeimage", authorization, async (req, res)=>{
     try {
-        
         let image = req.header("image");
         let user = req.header("user");
         const like = await pool.query(
@@ -137,9 +142,14 @@ router.post("/comments", authorization, async (req, res)=>{
         let user = req.user;
         //console.log(req.body);
         //insert new comment
+        
+        const user_name = (await pool.query("SELECT user_name FROM users WHERE user_id = $1",[
+            user
+        ])).rows[0].user_name;
+        // console.log(user_name);
         const newComment = await pool.query(
-            "INSERT INTO comments (user_id,comment_content,image_id) VALUES ($1,$2,$3) RETURNING *",
-            [user,content,image]);
+            "INSERT INTO comments (user_id,comment_content,image_id,user_name) VALUES ($1,$2,$3,$4) RETURNING *",
+            [user,content,image,user_name]);
         //console.log(newComment.rows);
         res.json(newComment.rows);
     }catch(err){

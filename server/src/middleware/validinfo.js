@@ -1,8 +1,11 @@
 module.exports = function(req, res, next) {
     const { email, name, password } = req.body;
-    console.log("validating info here bro");
+    //console.log("validating info here bro");
     function validEmail(userEmail) {
       return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
+    }
+    function validUsername(name){
+      return /^\S+\w{8,32}\S{1,}/.test(name);
     }
   
     if (req.path === "/register") {
@@ -11,6 +14,8 @@ module.exports = function(req, res, next) {
         return res.status(401).json("Missing Credentials");
       } else if (!validEmail(email)) {
         return res.json("Invalid Email");
+      } else if(!validUsername(name)){
+        return res.json("Invalid Username");
       }
     } else if (req.path === "/login") {
       if (![email, password].every(Boolean)) {
