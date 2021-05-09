@@ -5,7 +5,7 @@ module.exports = function(req, res, next) {
       return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
     }
     function validUsername(name){
-      return /^\S+\w{8,32}\S{1,}/.test(name);
+      return /^\S+\w{4,32}\S{1,}/.test(name);
     }
   
     if (req.path === "/register") {
@@ -15,7 +15,7 @@ module.exports = function(req, res, next) {
       } else if (!validEmail(email)) {
         return res.json("Invalid Email");
       } else if(!validUsername(name)){
-        return res.json("Invalid Username");
+        return res.json("Username must be 6-34 characters long");
       }
     } else if (req.path === "/login") {
       if (![email, password].every(Boolean)) {

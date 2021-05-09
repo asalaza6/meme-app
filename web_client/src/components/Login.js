@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import {toast} from 'react-toastify';
 import configs from '../config';
 import {Heading, Flex, Button, Input, Stack } from "@chakra-ui/react";
-const Login = ({setAuth})=>{
+import {connect} from 'react-redux';
+import {ADD_USER} from '../actions/userAction';
+import {AUTHORIZE} from '../actions/authAction';
+const Login = (props)=>{
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
     });
-    
     const {email, password} = inputs;
 
     const onChange = (e)=>{
@@ -31,13 +33,16 @@ const Login = ({setAuth})=>{
             const parseRes = await response.json();
             if(parseRes.token){
                 localStorage.setItem("token", parseRes.token);
-                
                 localStorage.setItem("user", parseRes.user_id);
+                //console.log(props,"add",parseRes);
+                props.addUser(parseRes.user_name, parseRes.user_id);
+                props.authorize(parseRes.token);
                 //console.log(parseRes);
-                setAuth(true);
+                //console.log(parseRes);
+                props.setAuth(true);
                 toast.success("login successful");
             }else{
-                setAuth(false);
+                props.setAuth(false);
                 toast.error(parseRes);
             }
             
@@ -65,5 +70,15 @@ const Login = ({setAuth})=>{
         </Flex>
     )
 }
+const mapStateToProps = state => ({
+    username: state.user.currentUser
+});
 
-export default Login;
+const mapDispatchToProps = (dispatch) =>{
+    return {
+        addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+        authorize: (token) => dispatch({type: AUTHORIZE, payload: {token}})
+    }
+};
+export default connect(null,mapDispatchToProps)(Login);
+

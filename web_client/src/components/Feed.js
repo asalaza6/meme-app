@@ -1,35 +1,27 @@
 import React, {useState,useEffect} from 'react';
 import configs from '../config';
-import {Box, Stack, Button} from "@chakra-ui/react";
+import {Flex, Stack, Text} from "@chakra-ui/react";
 import SideMenu from './Drawer';
 import Post from './Post';
-class AsyncLock {
-    constructor () {
-      this.disable = () => {}
-      this.promise = Promise.resolve();
+import {connect} from 'react-redux';
 
-    }
-    enable () {
-      this.promise = new Promise(resolve => this.disable = resolve)
-    }
-  }
-const Feed = ()=>{
+const Feed = (props)=>{
+    //console.log(props.user_id);
     //test function for getting comments
     const [images, setImages] = useState([]);
-    const [imagesLeft,updateImagesLeft] = useState(0);
-    const [c, updateC] = useState(0);
     //will replace above function with database working fetch
-    
+    const [newcomerMessage, setNew] = useState(false);
     var locked = false;
     async function getImages(){
         // let images = [];
         try{
             const length = images.length;
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/images`,{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/feedimages`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
-                    count: length
+                    count: length,
+                    user_id: props.user_id
                 }
             });
             const parseRes = await response.json();
@@ -40,11 +32,12 @@ const Feed = ()=>{
             }
             
             setImages([...images]);
-            var left = parseRes.count.rows[0].count-images.length;
-            //console.log(left);
-            updateImagesLeft(left);
-            if(left<=0 ){
-                //console.log(imagesLeft);
+            //console.log(parseRes.more);
+            
+            if(!parseRes.more){
+                if(images.length==0){
+                    setNew(true);
+                }
                 window.removeEventListener('scroll',scroll);
             }
             // console.log("inside");
@@ -73,20 +66,26 @@ const Feed = ()=>{
         window.addEventListener('scroll',scroll);
     },[]);
     return(
-        <Box display = "flex" align="center" justifyContent="space-between" flexDirection="column">
+        <Flex  display = "flex" align="center" justifyContent="center" flexDirection="column">
             <SideMenu heading="Your Feed"/>
-            
-            <Stack justify="center" align="center">
+            {newcomerMessage?
+                <Text textAlign="center" fontSize="15pt" w="80%" m = "40px">
+                    Follow other memers or upload your own meme to populate your Feed! <br/>
+                    Check out the Champion Rankings for the most popular memers! <br/>
+                    Check out the Popular Page to check out the hottest meme posts! <br/>
+                    Use the search bar to find your friends!
+                </Text>:null
+            }
+            <Stack m="20px" maxW="90%" w="500px"justify="center" align="center">
                 {images.map((img,index)=>{return( 
                    <Post img={img} key={index}/>
                 )})}
-                {imagesLeft>0?<Button
-                    onClick={()=>{
-                        getImages();
-                    }}
-                >More images</Button>:null}
             </Stack>
-        </Box>
+        </Flex>
     )
 }
-export default Feed;
+const mapStateToProps = state => ({
+    user_id: state.user.user_id
+})
+export default connect(mapStateToProps,null)(Feed);
+

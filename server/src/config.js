@@ -4,7 +4,8 @@ const DEVELOPMENT = false;
 const configs = {
     dev: DEVELOPMENT,
     images: {
-        location:DEVELOPMENT?"src/images/":"/var/www/memechampion.com/images/"
+        postLocation:DEVELOPMENT?"src/images/posts/":"/var/www/memechampion.com/images/posts/",
+        profileLocation:DEVELOPMENT?"src/images/profiles/":"/var/www/memechampion.com/images/profiles/"
     },
 }
 

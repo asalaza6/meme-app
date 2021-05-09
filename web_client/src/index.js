@@ -4,12 +4,18 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ChakraProvider } from "@chakra-ui/react";
-
+import {Provider} from 'react-redux';
+import {store,persistor} from './store.js';
+import {PersistGate} from 'redux-persist/es/integration/react';
 //console.log('ChakraProvider', ChakraProvider);
 ReactDOM.render(
-  <ChakraProvider>
-      <App />
-  </ChakraProvider>,
+  <Provider store={store}>
+    <PersistGate loading = {null} persistor={persistor}>
+      <ChakraProvider>
+          <App />
+      </ChakraProvider>
+    </PersistGate>
+  </Provider>,
   document.getElementById('root')
 );
 

@@ -1,13 +1,13 @@
 
 import React,{useEffect, useState} from "react";
 import { Link} from 'react-router-dom';
-
+import {connect} from 'react-redux';
 import {Link as Link2} from 'react-router-dom';
 import configs from '../config';
 import {Avatar,Text,Box, Flex, Button, Input } from "@chakra-ui/react";
 import { Drawer, DrawerOverlay,DrawerFooter, DrawerBody,DrawerCloseButton,DrawerHeader,DrawerContent, Heading, IconButton,  useDisclosure } from "@chakra-ui/react";
 import {HamburgerIcon} from "@chakra-ui/icons";
-const SideMenu = ({heading})=>{
+const SideMenu = ({heading,username})=>{
     const [users, setUsers] = useState([]);
     async function searchUsers(searchText){
         if(!searchText){
@@ -70,7 +70,7 @@ const SideMenu = ({heading})=>{
                             <Link  to="/rankings">
                                 <Button variant="ghost" w = "100%" textAlign="left">Champion Rankings</Button>
                             </Link>
-                            <Link  to="/dashboard">
+                            <Link  to={"/"+username}>
                                 <Button variant="ghost" w = "100%" textAlign="left">Profile</Button>
                             </Link>
                             <Link  to="/upload">
@@ -108,4 +108,7 @@ const SideMenu = ({heading})=>{
             </Box>
     )
 }
-export default SideMenu;
+const mapStateToProps = state => ({
+    username: state.user.username
+})
+export default connect(mapStateToProps,null)(SideMenu);

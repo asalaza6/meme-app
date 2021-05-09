@@ -48,3 +48,9 @@ CREATE TABLE likes(
     image_id uuid NOT NULL,
     user_id uuid NOT NULL
 );
+-- follows table
+CREATE TABLE follows(
+    followee uuid REFERENCES users(user_id),
+    follower uuid REFERENCES users(user_id),
+    PRIMARY KEY (followee,follower)
+);

@@ -1,5 +1,4 @@
 const DEVELOPMENT = false;
-export const DEVELOPMENT2 = true;
 const secure = DEVELOPMENT?false:true;
 /*
 development mode for images 
@@ -12,7 +11,8 @@ const configs = {
         port: secure?8081:8080
     },
     images: {
-	    location:(secure?"https":"http")+( DEVELOPMENT ? '://localhost:8000/' : '://memechampion.com/images/'),
+	    postLocation:(secure?"https":"http")+( DEVELOPMENT ? '://localhost:8000/posts/' : '://memechampion.com/images/posts/'),
+        profileLocation:(secure?"https":"http")+( DEVELOPMENT ? '://localhost:8000/profiles/' : '://memechampion.com/images/profiles/')
     },
 }
 export default configs;

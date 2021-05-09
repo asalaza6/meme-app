@@ -6,13 +6,15 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
+//redux
+import {connect} from 'react-redux';
+import {AUTHORIZE} from './actions/authAction';
 //components
 
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Dashboard from "./components/Dashboard";
-import Dashboard2 from "./components/Dashboard2";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from './components/Home';
@@ -25,9 +27,9 @@ import Rankings from './components/Rankings';
 
 toast.configure()
 
-function App() {
+function App(props) {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(props.auth);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
@@ -51,7 +53,6 @@ function App() {
     return isAuthenticated;
   }
   useEffect(()=>{
-    
     isAuth();
   })
   return (
@@ -115,16 +116,24 @@ function App() {
             <Register {...props} setAuth = {setAuth}/>:<Redirect to="/"/>
           }/>
           
-          <Route path = "/dashboard" >
-                {isAuthenticated?
-              <Dashboard setAuth = {setAuth}/>:
-              <Redirect to="/"/>}
-          </Route>
-          <Route path = "/:username" component={Dashboard2}/>
+          <Route path = "/:username"  render={({match})=> 
+          isAuthenticated ?
+            <Dashboard match = {match}  setAuth = {setAuth}/>:<Redirect to="/"/>
+          }/>
         </Switch>
       </div>
     </Router>
   </Fragment>);
 }
+const mapStateToProps = state => ({
+  username: state.user.username,
+  auth: state.auth.auth
+});
 
-export default App;
+const mapDispatchToProps = (dispatch) =>{
+  return {
+      // addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+      authorize: (auth) => dispatch({type: AUTHORIZE, payload: {auth}})
+  }
+};
+export default connect(mapStateToProps,mapDispatchToProps)(App);

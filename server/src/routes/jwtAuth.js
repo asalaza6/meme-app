@@ -17,7 +17,7 @@ router.post("/register",validInfo, async (req, res) => {
         ]);
 
         if(user.rows.length !== 0){
-            return res.status(401).json("User already exists");
+            return res.status(401).json("Username or email already exists");
         }
         //3. bcrypt the password
         
@@ -31,9 +31,10 @@ router.post("/register",validInfo, async (req, res) => {
             [name, email, bcryptPassword]);
         //5. generating our jwt token
         const user_id = newUser.rows[0].user_id;
+        const user_name = user.rows[0].user_name;
         const token = jwtGenerator(user_id);
         //console.log(req.body);
-        return res.json({token,user_id});
+        return res.json({token,user_id,user_name});
 
     }catch(err){
         console.log(err.message);
@@ -62,9 +63,10 @@ router.post("/login",validInfo, async(req, res)=>{
         }
         //4 
         const user_id = user.rows[0].user_id;
+        const user_name = user.rows[0].user_name;
         const token = jwtGenerator(user_id);
         //console.log(token);
-        return res.json({token,user_id});
+        return res.json({token,user_id,user_name});
     }catch(err){
         console.log(err.message);
         res.status(500).send("Server Error");

@@ -1,0 +1,2 @@
+export const AUTHORIZE = 'AUTHORIZE';
+

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import configs from '../config';
-
+import {ADD_USER} from '../actions/userAction';
+import {AUTHORIZE} from '../actions/authAction';
+import {connect} from 'react-redux';
 import {Flex, Heading, Button, Input, Stack } from "@chakra-ui/react";
-const Register = ({setAuth}) =>{
-
+const Register = ({setAuth,addUser,authorize}) =>{
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
-        confirm: ""
+        confirm: "",
+        name:""
     });
     
     const {email, password, name, confirm} = inputs;
@@ -37,11 +39,14 @@ const Register = ({setAuth}) =>{
             if(parseRes.token){
 
                 localStorage.setItem("token", parseRes.token);
-                
+                //console.log(addUser,authorize);
+                addUser(parseRes.user_name, parseRes.user_id);
+                authorize(parseRes.token);
                 localStorage.setItem("user", parseRes.user_id);
                 setAuth(true);
-                toast.success("Registerd Successfully!");
+                toast.success("Registered Successfully!");
             }else{
+                console.log("error parseRes");
                 toast.error(parseRes);
             }
         }catch(err){
@@ -74,5 +79,11 @@ const Register = ({setAuth}) =>{
         </Flex>
     )
 }
+const mapDispatchToProps = (dispatch) =>{
+    return {
+        addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+        authorize: (token) => dispatch({type: AUTHORIZE, payload: {token}})
+    }
+};
+export default connect(null,mapDispatchToProps)(Register);
 
-export default Register;

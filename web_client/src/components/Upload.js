@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import configs from '../config';
 import {toast} from 'react-toastify';
+import Compress from "react-image-file-resizer";
 
 // import compress from 'compress.js';
 import {Flex, Button, Input, FormLabel } from "@chakra-ui/react";
@@ -14,17 +15,26 @@ const Upload = ()=>{
         let reader = new FileReader();
         
         let file = evt.target.files[0];
-        //console.log(file.size);
-        setFile(file);
-        //console.log(file)
-        reader.addEventListener("loadend", function () {
-            // convert image file to base64 string
-            setPreview(reader.result);
 
-            }, false);
-        if(file){
-            reader.readAsDataURL(file);
+        //console.log(file);
+        setFile(file);
+        if(!file){
+            setPreview(null);
+            return;
         }
+        Compress.imageFileResizer(
+            file, // the file from input
+            480, // width
+            480, // height
+            "JPEG", // compress format WEBP, JPEG, PNG
+            70, // quality
+            0, // rotation
+            (uri) => {
+                setPreview(uri);
+            // You upload logic goes here
+            },
+            "base64" // blob or base64 default base64
+        );
     }
     async function handleSubmit(){
         if(file === null){
@@ -33,7 +43,8 @@ const Upload = ()=>{
         }
         let body = {
             name:file.name,
-            content:preview
+            content:preview,
+            type: "post"
         }
         //console.log(body);
         try{
@@ -60,7 +71,7 @@ const Upload = ()=>{
     return (
         <Flex direction="column" align="center">
             <SideMenu heading = "Upload"/>
-            <Stack maxW="700px">
+            <Stack p="10px" maxW="700px">
                 <FormLabel>Upload Your Meme</FormLabel>
                 <Input onInput={onChange} accept="image/png, image/jpeg" type="file" ref={inputRef}/>
                 {preview?<Image alt="preview" id="preview" src={preview}/>:null}
