@@ -177,6 +177,7 @@ class Dashboard extends React.Component {
             this.setState({uploadFile:null});
             this.setState({uploadOpen:false});
             toast.success("Upload successful!");
+            window.location.reload(false);
         }catch(err){
             console.log(err.message);
             this.setState({uploadOpen:false});

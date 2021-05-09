@@ -42,7 +42,7 @@ class Post extends React.Component {//({img,index})=>
                 }
             });
             const parseRes = await response.json();
-            
+            window.location.reload(false);
             //console.log(parseRes);
         }catch(err){
             console.log(err.message);
