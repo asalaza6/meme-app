@@ -30,7 +30,7 @@ const Rankings = ()=>{
     } 
     useEffect(()=>{
         getChampions()
-    },[]);
+    },[getChampions]);
     return(
         <Box  align="center" justify="center" >
             <SideMenu heading="Meme Champion Rankings"/>
@@ -40,7 +40,7 @@ const Rankings = ()=>{
                     return(
                         <Link style = {{textDecoration:'none'}} to ={"/"+champion.user_name}>
                             <Flex shadow="inner" align="center"  fontFamily = "mono" borderRadius="10px" p = "30px" m = "10px"  direction = "row">
-                                <Text m = "20px" fontSize="xx-large" color={index == 0 ? "gold":index == 1 ?"silver":index == 2 ?"brown":"black"} fontWeight="800">{index + 1}</Text>
+                                <Text m = "20px" fontSize="xx-large" color={index === 0 ? "gold":index === 1 ?"silver":index === 2 ?"brown":"black"} fontWeight="800">{index + 1}</Text>
                                 <Avatar  size="xl" src={configs.images.profileLocation+champion.user_name+".jpeg"} />
                                 <Text m = "20px" fontFamily="cursive" fontSize="large" >{champion.user_name}</Text>
                             </Flex>

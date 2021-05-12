@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {toast} from 'react-toastify';
 import configs from '../config';
 import Post from './Post';
@@ -15,7 +15,7 @@ class Dashboard extends React.Component {
         this.state = {
             name:"",
             images:[],
-            owner: this.props.match.params.username == this.props.username,
+            owner: this.props.match.params.username === this.props.username,
             following:false,
             uploadOpen: false,
             uploadContents: null,
@@ -25,27 +25,12 @@ class Dashboard extends React.Component {
 
         //console.log(configs.images.profileLocation+this.props.username);
         
-        this.getName = this.getName.bind(this);
         this.getProfileImages = this.getProfileImages.bind(this);
         this.logout = this.logout.bind(this);
         this.follow = this.follow.bind(this);
         this.isFollowing = this.isFollowing.bind(this);
         this.onChange = this.onChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    async getName(){
-        try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard`,{
-                method: "GET",
-                headers:{
-                    token: localStorage.token
-                }
-            });
-            const parseRes = await response.json();
-            this.setState({name:parseRes.user_name});
-        }catch(err){
-            console.log(err.message);
-        }
     }
 
     async getProfileImages(){
@@ -79,16 +64,16 @@ class Dashboard extends React.Component {
     logout(e){
         e.preventDefault();
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        localStorage.removeItem("persist:root");
         window.location.href = "/";
         toast.success("Logout successfully");
     }
     async follow(e){
         e.preventDefault();
-        // use this.props.user_id and followee's username to send follow request and 
+        // use this.props.username and followee's username to send follow request and 
         let body = {
-            user_id:this.props.user_id,
-            username: this.props.match.params.username,
+            follower:this.props.username,
+            followee: this.props.match.params.username,
             state: this.state.following
         }
         try{
@@ -100,7 +85,7 @@ class Dashboard extends React.Component {
                 },
                 body:JSON.stringify(body)
             });
-            const parseRes = await response.json();
+            // const parseRes = await response.json();
             //console.log("follow",parseRes);
             this.setState({following:!this.state.following});
             toast.success(`${this.state.following?"Follow":"Unfollow"} successfully`);
@@ -109,15 +94,15 @@ class Dashboard extends React.Component {
         }
     }
     async isFollowing(){
-        // use this.props.user_id and followee's username to check if following
+        // use this.props.username and followee's username to check if following
         
         try{
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/follow`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
-                    user_id:this.props.user_id,
-                    username: this.props.match.params.username
+                    follower:this.props.username,
+                    followee: this.props.match.params.username
                 }
             });
             const parseRes = await response.json();
@@ -129,10 +114,10 @@ class Dashboard extends React.Component {
         //console.log(images);
     }
     componentDidUpdate(){
-        if(this.props.match.params.username != this.state.name){
+        if(this.props.match.params.username !== this.state.name){
             //console.log(this.props.match);
             const {params: {username}} = this.props.match;
-            this.setState({name:username,owner:this.props.match.params.username == this.props.username});
+            this.setState({name:username,owner:this.props.match.params.username === this.props.username});
             this.getProfileImages();
             this.isFollowing();
         }
@@ -221,6 +206,9 @@ class Dashboard extends React.Component {
                     <Box boxShadow = "xl" p = "10px"  rounded="md" bg = "white"  left="0" top ="0" bottom ="0" position="absolute"   >
                         <Input size="xs"  p = "0" m = "0" onInput={this.onChange} accept="image/png, image/jpeg" type="file"/>
                         <Button m = "10px" p = "10px" onClick={()=>{this.handleSubmit()}}>Submit</Button>
+                        <Button onClick={()=>{this.setState({uploadOpen:false})}} boxShadow = "2xl"  p = "15px"  rounded="2xl" bg = "white"  right="0" bottom ="0" position="absolute"   >
+                            <Text align="center" justify="center">x</Text>
+                        </Button>
                     </Box>  
                         :
                     <Button onClick={()=>{this.setState({uploadOpen:true})}} boxShadow = "2xl"  p = "15px"  rounded="2xl" bg = "white"  right="0" bottom ="0" position="absolute"   >
@@ -235,7 +223,7 @@ class Dashboard extends React.Component {
                 }<Heading color = "grey" p = "10px" textAlign = 'center'>Posts</Heading>
                 <Stack m="20px" maxW="700px" justify="center" align="center">
                     {this.state.images.map((img,index)=>{return( 
-                        <Post user_name = {this.props.match.params.username} img={img} key={index}/>
+                        <Post img={img} key={index}/>
                     )})}
                 </Stack>
             </Flex>
@@ -244,8 +232,7 @@ class Dashboard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    username: state.user.username,
-    user_id: state.user.user_id
+    username: state.user.username
 })
 export default connect(mapStateToProps,null)(Dashboard);
 

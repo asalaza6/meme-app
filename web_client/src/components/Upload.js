@@ -12,7 +12,6 @@ const Upload = ()=>{
     const [preview,setPreview] = useState(null);
 
     function onChange(evt){
-        let reader = new FileReader();
         
         let file = evt.target.files[0];
 
@@ -42,7 +41,6 @@ const Upload = ()=>{
             return;
         }
         let body = {
-            name:file.name,
             content:preview,
             type: "post"
         }

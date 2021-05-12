@@ -6,7 +6,7 @@ import Post from './Post';
 import {connect} from 'react-redux';
 
 const Feed = (props)=>{
-    //console.log(props.user_id);
+    
     //test function for getting comments
     const [images, setImages] = useState([]);
     //will replace above function with database working fetch
@@ -21,7 +21,7 @@ const Feed = (props)=>{
                 headers:{
                     token: localStorage.token,
                     count: length,
-                    user_id: props.user_id
+                    user_name: props.username
                 }
             });
             const parseRes = await response.json();
@@ -35,7 +35,7 @@ const Feed = (props)=>{
             //console.log(parseRes.more);
             
             if(!parseRes.more){
-                if(images.length==0){
+                if(images.length===0){
                     setNew(true);
                 }
                 window.removeEventListener('scroll',scroll);
@@ -64,9 +64,9 @@ const Feed = (props)=>{
     useEffect(()=>{
         getImages()
         window.addEventListener('scroll',scroll);
-    },[]);
+    },[getImages,scroll]);
     return(
-        <Flex  display = "flex" align="center" justifyContent="center" flexDirection="column">
+        <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
             <SideMenu heading="Your Feed"/>
             {newcomerMessage?
                 <Text textAlign="center" fontSize="15pt" w="80%" m = "40px">
@@ -85,7 +85,7 @@ const Feed = (props)=>{
     )
 }
 const mapStateToProps = state => ({
-    user_id: state.user.user_id
+    username: state.user.username
 })
 export default connect(mapStateToProps,null)(Feed);
 

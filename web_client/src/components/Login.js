@@ -33,9 +33,8 @@ const Login = (props)=>{
             const parseRes = await response.json();
             if(parseRes.token){
                 localStorage.setItem("token", parseRes.token);
-                localStorage.setItem("user", parseRes.user_id);
                 //console.log(props,"add",parseRes);
-                props.addUser(parseRes.user_name, parseRes.user_id);
+                props.addUser(parseRes.user_name);
                 props.authorize(parseRes.token);
                 //console.log(parseRes);
                 //console.log(parseRes);
@@ -76,7 +75,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+        addUser : (username) => dispatch({type: ADD_USER,payload: {username}}),
         authorize: (token) => dispatch({type: AUTHORIZE, payload: {token}})
     }
 };

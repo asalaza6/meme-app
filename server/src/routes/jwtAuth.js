@@ -30,11 +30,10 @@ router.post("/register",validInfo, async (req, res) => {
             "INSERT INTO users (user_name, user_email,user_password) VALUES ($1, $2, $3) RETURNING *",
             [name, email, bcryptPassword]);
         //5. generating our jwt token
-        const user_id = newUser.rows[0].user_id;
         const user_name = user.rows[0].user_name;
-        const token = jwtGenerator(user_id);
+        const token = jwtGenerator(user_name);
         //console.log(req.body);
-        return res.json({token,user_id,user_name});
+        return res.json({token,user_name});
 
     }catch(err){
         console.log(err.message);
@@ -62,11 +61,10 @@ router.post("/login",validInfo, async(req, res)=>{
             return res.status(401).json("Password or Email is incorrect");
         }
         //4 
-        const user_id = user.rows[0].user_id;
         const user_name = user.rows[0].user_name;
-        const token = jwtGenerator(user_id);
+        const token = jwtGenerator(user_name);
         //console.log(token);
-        return res.json({token,user_id,user_name});
+        return res.json({token,user_name});
     }catch(err){
         console.log(err.message);
         res.status(500).send("Server Error");
@@ -75,27 +73,7 @@ router.post("/login",validInfo, async(req, res)=>{
 
 router.post("/changePassword",validInfo, async(req, res)=>{
     try{
-        //1. destructure the req.body
-
-        const {email, password} = req.body;
-
-        //2. check if user doesn't exist
-
-        const user = await pool.query("SELECT * FROM users where user_email = $1",[email]);
-
-        if(user.rows.length === 0){
-            return res.status(401).json("Password or Email is incorrect");
-        }
-        //check if incoming ppassswod is the same the database password
-
-        const validPassword = await bcrypt.compare(password,user.rows[0].user_password);
-        if(!validPassword){
-            return res.status(401).json("Password or Email is incorrect");
-        }
-        //4 
-        const token = jwtGenerator(user.rows[0].user_id);
-
-        return res.json({token});
+        //not yet implemented
     }catch(err){
         console.log(err.message);
         res.status(500).send("Server Error");

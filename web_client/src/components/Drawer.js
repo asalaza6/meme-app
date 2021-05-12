@@ -1,5 +1,5 @@
 
-import React,{useEffect, useState} from "react";
+import React,{useState} from "react";
 import { Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Link as Link2} from 'react-router-dom';

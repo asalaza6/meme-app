@@ -35,6 +35,7 @@ function App(props) {
     setIsAuthenticated(boolean);
   }
   async function isAuth(){
+    console.log(isAuthenticated)
     //check if isAuthenticated is already true to avoid unnecessary fetch
     // isAuthenticated will be resseet
     //console.log("hello");

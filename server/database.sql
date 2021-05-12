@@ -4,53 +4,44 @@ CREATE DATABASE memelogin;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 --set extension
+
+--updated
 CREATE TABLE users(
-    user_id uuid PRIMARY KEY DEFAULT
-    uuid_generate_v4(),
     user_name VARCHAR(255) NOT NULL,
     user_email VARCHAR(255) NOT NULL,
-    user_password VARCHAR(255) NOT NULL
+    user_password VARCHAR(255) NOT NULL,
+    PRIMARY KEY(user_name)
 );
 
---insert fake users
-
-INSERT INTO users (user_name, user_email,user_password) VALUES ('alex','alex@gmail.com','alex');
-
-
---create images table
-
+--updated images table
 CREATE TABLE images(
-    image_id uuid PRIMARY KEY DEFAULT
-    uuid_generate_v4(),
-    user_id uuid NOT NULL,
-    image_name VARCHAR(255) NOT NULL,
+    image_id uuid DEFAULT uuid_generate_v4(),
+    user_name VARCHAR(255) NOT NULL REFERENCES users(user_name),
     image_type VARCHAR(255) NOT NULL,
-    create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2)
+    create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2),
+    PRIMARY KEY(image_id)
 );
 
---create comments table
-
+--updated comments table
 CREATE TABLE comments(
-    comment_id uuid PRIMARY KEY DEFAULT
-    uuid_generate_v4(),
-    image_id uuid NOT NULL,
-    user_id VARCHAR(255) NOT NULL,
-    user_name VARCHAR(255) NOT NULL,
+    comment_id uuid DEFAULT uuid_generate_v4(),
+    image_id uuid NOT NULL REFERENCES images(image_id),
+    user_name VARCHAR(255) REFERENCES users(user_name),
     comment_content VARCHAR(255) NOT NULL,
-    create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2)
+    create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2),
+    PRIMARY KEY(comment_id)
 );
 
---create comments table
-
+--update likes table
 CREATE TABLE likes(
-    like_id uuid PRIMARY KEY DEFAULT
-    uuid_generate_v4(),
-    image_id uuid NOT NULL,
-    user_id uuid NOT NULL
+    image_id uuid NOT NULL REFERENCES images(image_id),
+    user_name VARCHAR(255) NOT NULL REFERENCES users(user_name),
+    PRIMARY KEY(image_id, user_name)
 );
+
 -- follows table
 CREATE TABLE follows(
-    followee uuid REFERENCES users(user_id),
-    follower uuid REFERENCES users(user_id),
+    followee VARCHAR(255) REFERENCES users(user_name),
+    follower VARCHAR(255) REFERENCES users(user_name),
     PRIMARY KEY (followee,follower)
 );

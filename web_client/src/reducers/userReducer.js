@@ -1,7 +1,6 @@
 import {ADD_USER} from '../actions/userAction';
 const initialState = {
-    username: "noone",
-    user_id: null
+    username: "noone"
 }
 
 
@@ -11,8 +10,7 @@ export default function userReducer(state = initialState, action){
         case ADD_USER:
             //console.log(action.payload)
             return {...state, 
-            username: action.payload.username,
-            user_id: action.payload.id}
+            username: action.payload.username}
         default:
             return state
     }

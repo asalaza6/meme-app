@@ -6,11 +6,10 @@ import Post from './Post';
 import {connect} from 'react-redux';
 
 const Popular = (props)=>{
-    //console.log(props.user_id);
+    
     //test function for getting comments
     const [images, setImages] = useState([]);
     const [imagesLeft,updateImagesLeft] = useState(0);
-    const [c, updateC] = useState(0);
     //will replace above function with database working fetch
     
     var locked = false;
@@ -23,7 +22,7 @@ const Popular = (props)=>{
                 headers:{
                     token: localStorage.token,
                     count: length,
-                    user_id: props.user_id
+                    user_name: props.username
                 }
             });
             const parseRes = await response.json();
@@ -84,7 +83,7 @@ const Popular = (props)=>{
     )
 }
 const mapStateToProps = state => ({
-    user_id: state.user.user_id
+    username: state.user.username
 })
 export default connect(mapStateToProps,null)(Popular);
 

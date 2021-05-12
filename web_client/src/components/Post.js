@@ -1,9 +1,9 @@
 
-import React, {  useEffect, useState } from "react";
+import React from "react";
 import configs from '../config';
 import {connect} from 'react-redux';
 import {Box,Input,  Flex, Button, Image } from "@chakra-ui/react";
-import { Avatar, Text, IconButton, Stack} from "@chakra-ui/react";
+import { Avatar, Text, IconButton} from "@chakra-ui/react";
 import {DeleteIcon, ChatIcon, StarIcon, HamburgerIcon, CloseIcon, SmallCloseIcon, CheckIcon} from "@chakra-ui/icons";
 import {Link } from 'react-router-dom';
 
@@ -19,26 +19,26 @@ class Post extends React.Component {//({img,index})=>
             image_type: null,
             number_likes: 0,
             menuOpen:false,
-            deleteConfirm:false
+            deleteConfirm:false,
+            offline: false
         }
         //console.log(props);
         this.getComments = this.getComments.bind(this);
         this.checkLike = this.checkLike.bind(this);
+        this.checkLikeOffline = this.checkLikeOffline.bind(this);
         this.likeImage = this.likeImage.bind(this);
         this.addComment = this.addComment.bind(this);
         this.deleteComment = this.deleteComment.bind(this);
-        this.getName = this.getName.bind(this);
         this.deletePost = this.deletePost.bind(this);
     }
     async deletePost(){
         try{
-            const length = this.state.comments.length;
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/deletepost`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
                     image:this.state.image_id,
-                    user:this.props.user_id
+                    user:this.props.user_name
                 }
             });
             const parseRes = await response.json();
@@ -76,25 +76,7 @@ class Post extends React.Component {//({img,index})=>
         }
         
     }
-    async getName(user_id){
-        
-        try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/getname`,{
-                method: "GET",
-                headers:{
-                    token: localStorage.token,
-                    user_id:user_id,
-                }
-            });
-            const parseRes = await response.json();
-            //console.log(parseRes);
-            this.setState({image_user:parseRes.rows[0].user_name});
-
-        }catch(err){
-            console.log(err.message);
-        }
-        
-    }
+    
     async checkLike(){
         try{
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/likeimage`,{
@@ -102,7 +84,7 @@ class Post extends React.Component {//({img,index})=>
                 headers:{
                     token: localStorage.token,
                     image: this.props.img.image_id,
-                    user: localStorage.user
+                    user: this.props.username
                 }
             });
             const parseRes = await response.json();
@@ -118,12 +100,34 @@ class Post extends React.Component {//({img,index})=>
         }
           
     }
+    async checkLikeOffline(){
+        // console.log('offline lik')
+        try{
+            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/offlinelike`,{
+                method: "GET",
+                headers:{
+                    image: this.props.img.image_id
+                }
+            });
+            const parseRes = await response.json();
+            // console.log(parseRes);
+            this.setState({
+                number_likes:parseInt(parseRes.number_likes)
+            });
+            
+           // console.log("checking img",img.image_id,parseRes);
+            //console.log(img.comments);
+        }catch(err){
+
+        }
+          
+    }
     async likeImage(){
 
         let body = {
             image: this.state.image_id,
             liked: this.state.liked,
-            user: localStorage.user
+            user: this.props.username
         }
         //console.log("first",this.state);
 
@@ -148,7 +152,7 @@ class Post extends React.Component {//({img,index})=>
     }
     
     async addComment(content){
-        if(content == ""){
+        if(content === ""){
             return;
         }
         let body = {
@@ -177,7 +181,6 @@ class Post extends React.Component {//({img,index})=>
             comment_content:content,
             create_timestamp:"right now",
             comment_id: id,
-            user_id:localStorage.user,
             user_name:this.props.username
         });
         this.setState({comments:this.state.comments});
@@ -219,53 +222,46 @@ class Post extends React.Component {//({img,index})=>
     }
     componentDidUpdate(){
         //console.log("updating",this.props,this.props.key);
-        if(this.props.img.image_id != this.state.image_id){
+        if(this.props.img.image_id !== this.state.image_id){
             //console.log("updating props", this.props,this.props.img,this.state.image_id);
             this.setState({
                 image_id:this.props.img.image_id,
                 image_type: this.props.img.image_type,
-                liked: this.props.img.liked,
                 number_likes: 0
             });
             this.checkLike();
         }
     }
     componentDidMount(){
-        //console.log(this.props.img);
-        if(this.props.user_name){
-            this.setState({
-                image_id:this.props.img.image_id,
-                image_type: this.props.img.image_type,
-                liked: this.props.img.liked,
-                number_likes: 0,
-                image_user: this.props.user_name
-            });
-        } 
-        else{
-            this.getName(this.props.img.user_id);
-            this.setState({
-                image_id:this.props.img.image_id,
-                image_type: this.props.img.image_type,
-                liked: this.props.img.liked,
-                number_likes: 0
-            });
-        }
+        //
+        this.setState({
+            image_id:this.props.img.image_id,
+            image_type: this.props.img.image_type,
+            image_user: this.props.img.user_name,
+            number_likes: 0,
+            offline: this.props.offline
+        });
+        // console.log(this.props);
         //console.log(this.state);
        // console.log("update img");
-        this.checkLike();
+       if(!this.props.offline){
+            this.checkLike();
+       }else{
+           this.checkLikeOffline();
+       }
 
     }
     render(){
     return (
         <Box boxShadow = "2xl" borderRadius="20px" overflow="hidden" w = "100%" >
             <Flex justify="space-between" bg="white" p = "15px" direction="row">
-                <Link style = {{textDecoration:'none'}} to ={"/"+this.state.image_user}>
+                <Link style = {{textDecoration:'none'}} to ={this.props.offline?"#":"/"+this.state.image_user}>
                     <Flex dir="row">
                         <Avatar  size="md" src={configs.images.profileLocation+this.state.image_user+".jpeg"} />
-                        <Text marginLeft="10px" fontWeight="800" wrap="wrap" fontSize="x-large">{this.state.image_user}</Text>
+                        <Text marginLeft="10px" fontWeight="600" wrap="wrap" fontSize="x-large">{this.state.image_user}</Text>
                     </Flex>
                 </Link>
-                {this.state.image_user==this.props.username?<Box position ="relative">
+                {this.state.image_user===this.props.username?<Box position ="relative">
                     <IconButton 
                         icon = {<HamburgerIcon/>}
                         onClick={()=>{this.setState({menuOpen:true})}}/>
@@ -304,7 +300,7 @@ class Post extends React.Component {//({img,index})=>
                     p = "20px" variant="ghost" h = "30px"  flex={1}
                     aria-label="Like"
                     icon={<Flex align="center"><Text marginRight ="6px">{this.state.number_likes}</Text><StarIcon/></Flex>}
-                    onClick={()=>{this.likeImage();}}
+                    onClick={()=>{if(this.props.offline){alert("Make an account to unlock this feature!");return;}else{this.likeImage();}}}
                     color={this.state.liked?"green.400":"red.400"}
                     />
                 <IconButton
@@ -321,32 +317,34 @@ class Post extends React.Component {//({img,index})=>
                     />
             </Flex>
             {this.state.comment?
-                <Flex  bg = "white" direction="column-reverse">
+                <Flex bg = "white" direction="column-reverse">
                     <Flex  m = "10px" direction="row" alignItems="center" >
                         <Input type = "text" marginRight="5px" id = {"comment"+this.state.image_id}/>
                         <Button onClick={()=>{
+                            if(this.props.offline){alert("Make an account to unlock this feature!");return;}
+                            else{
                             let text = document.getElementById("comment"+this.state.image_id);
                             this.addComment(text.value);
-                            text.value="";}}>Submit</Button>
+                            text.value="";}}}>Submit</Button>
                     </Flex>
                     {this.state.comments.map((comment,index)=>{
                         return(
-                        <Flex w = "100%" margin = "10px" align="center" justify="space-between" direction = "row" key = {index}>
+                        <Flex w = "96%" margin = "2%" align="center" justify="space-between" direction = "row" key = {index}>
                             
                             <Flex m = "2px" direction = "column" flex={1} justifyContent="center" alignItems="center">
-                                <Link key = {index} to ={"/"+comment.user_name}>
-                                        <Avatar  flex={4} alignSelf="center" size="md" src={configs.images.profileLocation+this.props.username+".jpeg"} />
+                                <Link key = {index} to ={this.props.offline?"#":"/"+comment.user_name}>
+                                        <Avatar  flex={4} alignSelf="center" size="md" src={configs.images.profileLocation+comment.user_name+".jpeg"} />
                                 </Link>
                             </Flex>
-                            <Flex m = "2px" direction = "column"  flex={9}  >
-                                <Text fontWeight="800" fontSize="xs">
+                            <Flex w="20%" m = "2px" flexShrink = {1} direction = "column"  flex={9}  >
+                                <Text fontWeight="600" fontSize="s">
                                     {comment.user_name}
                                 </Text>
-                                <Text overflowWrap="revert"   flexWrap="wrap"  fontSize="s"   m="5px">
+                                <Text overflowWrap="revert"  flexWrap="wrap"  fontSize="s"   >
                                     {comment.comment_content}
                                 </Text>
                             </Flex>
-                            {localStorage.user === comment.user_id?
+                            {this.props.username === comment.user_name?
                             <IconButton
                                 onClick={()=>{this.deleteComment(comment)}}
                                 aria-label="Delete"
@@ -367,8 +365,7 @@ class Post extends React.Component {//({img,index})=>
 }
 
 const mapStateToProps = state => ({
-    username: state.user.username,
-    user_id: state.user.user_id
+    username: state.user.username
 })
 export default connect(mapStateToProps,null)(Post);
 

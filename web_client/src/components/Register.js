@@ -22,7 +22,7 @@ const Register = ({setAuth,addUser,authorize}) =>{
 
     const onSubmitForm = async (e)=>{
         e.preventDefault();
-        if(confirm != password){
+        if(confirm !== password){
             toast.error("Passwords don't match");
             return;
         }
@@ -40,9 +40,9 @@ const Register = ({setAuth,addUser,authorize}) =>{
 
                 localStorage.setItem("token", parseRes.token);
                 //console.log(addUser,authorize);
-                addUser(parseRes.user_name, parseRes.user_id);
+                addUser(parseRes.user_name);
                 authorize(parseRes.token);
-                localStorage.setItem("user", parseRes.user_id);
+                // localStorage.setItem("user", parseRes.user_id);
                 setAuth(true);
                 toast.success("Registered Successfully!");
             }else{
@@ -81,7 +81,7 @@ const Register = ({setAuth,addUser,authorize}) =>{
 }
 const mapDispatchToProps = (dispatch) =>{
     return {
-        addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+        addUser : (username) => dispatch({type: ADD_USER,payload: {username}}),
         authorize: (token) => dispatch({type: AUTHORIZE, payload: {token}})
     }
 };
