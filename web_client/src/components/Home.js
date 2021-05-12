@@ -64,7 +64,7 @@ const Home = (props)=>{
         window.addEventListener('scroll',scroll);
     },[]);
     return(
-        <Flex w="100vw" minH="100vh" display = "flex" align="center" justifyContent="center" flexDirection="column">
+        <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
             <Flex w="100%" p = "10px" direction = "row">
                 <Box flexGrow={1}>
                     <Text fontSize="35px"  fontFamily="heading"  >
