@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react';
 import configs from '../config';
-import {Flex, Stack, Button, Text,Box} from "@chakra-ui/react";
+import {Flex, Stack, Button, Text,Box, Image} from "@chakra-ui/react";
 import Post from './Post';
 import {Link} from 'react-router-dom';
 const Home = (props)=>{
@@ -66,7 +66,9 @@ const Home = (props)=>{
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
             <Flex w="100%" p = "10px" direction = "row">
+                <Image m = "10px"  w = "20" src="../logo.svg"/>
                 <Box flexGrow={1}>
+                    
                     <Text fontSize="35px"  fontFamily="heading"  >
                         Meme Champion
                     </Text>
