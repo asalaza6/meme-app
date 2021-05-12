@@ -64,7 +64,7 @@ const Feed = (props)=>{
     useEffect(()=>{
         getImages()
         window.addEventListener('scroll',scroll);
-    },[getImages,scroll]);
+    },[]);
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
             <SideMenu heading="Your Feed"/>
