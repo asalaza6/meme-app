@@ -156,7 +156,9 @@ class Dashboard extends React.Component {
                 },
                 body: JSON.stringify(body)
             });
-            const parseRes = await response.json();
+            await response.json().then(()=>{
+                
+            });
             //console.log(parseRes);
             this.setState({uploadContents:null});
             this.setState({uploadFile:null});
@@ -196,10 +198,10 @@ class Dashboard extends React.Component {
     
     render(){
     return (
-        <Box minH = "100vh" alignItems="center" flexDirection="column" display = "flex">
+        <Box minH = "100vh" w = "100%" alignItems="center" flexDirection="column" display = "flex">
             <SideMenu heading={this.state.name}/>
             
-            <Flex direction = "column" align = "center" maxW="700px">
+            <Flex direction = "column" align = "center" w = "100%" maxW="700px">
                 <Box rounded="md" align="center" width="200px" h= "200px" position = "relative" >
                     <Avatar boxShadow = "xl" size="full" src={configs.images.profileLocation+this.state.name+".jpeg"} />
                     {this.state.owner?(this.state.uploadOpen?
@@ -214,14 +216,16 @@ class Dashboard extends React.Component {
                     <Button onClick={()=>{this.setState({uploadOpen:true})}} boxShadow = "2xl"  p = "15px"  rounded="2xl" bg = "white"  right="0" bottom ="0" position="absolute"   >
                         <Text align="center" justify="center">+</Text>
                     </Button>):null}
-                </Box>{this.state.owner?
+                </Box>
+                {this.state.owner?
                     <Button m="10px" p = "10px" onClick={e=>this.logout(e)}>Logout</Button>
                 :(this.state.following?
                     <Button m="10px" p = "10px" onClick={e=>this.follow(e)}>Unfollow</Button>:
                     <Button m="10px" p = "10px" onClick={e=>this.follow(e)}>Follow</Button>
                 )
-                }<Heading color = "grey" p = "10px" textAlign = 'center'>Posts</Heading>
-                <Stack m="20px" maxW="700px" justify="center" align="center">
+                }
+                <Heading color = "grey" p = "10px" textAlign = 'center'>Posts</Heading>
+                <Stack m="20px" justify="center" align="center">
                     {this.state.images.map((img,index)=>{return( 
                         <Post img={img} key={index}/>
                     )})}

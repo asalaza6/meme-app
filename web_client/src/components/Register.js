@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import configs from '../config';
-import {ADD_USER} from '../actions/userAction';
-import {AUTHORIZE} from '../actions/authAction';
+import {ADD_USER, AUTHORIZE} from '../actions/userAction';
 import {connect} from 'react-redux';
 import {Flex, Heading, Button, Input, Stack } from "@chakra-ui/react";
 const Register = ({setAuth,addUser,authorize}) =>{

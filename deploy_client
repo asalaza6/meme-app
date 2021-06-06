@@ -1,6 +1,7 @@
 #!/bin/bash
 cd web_client
 npm install
+npm audit fix
 npm run build
 echo "created build"
 sudo mv /var/www/memechampion.com/images /var/www/images

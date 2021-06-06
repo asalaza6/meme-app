@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react';
 import configs from '../config';
-import {Flex, Stack, Button} from "@chakra-ui/react";
+import {Flex, Stack} from "@chakra-ui/react";
 import SideMenu from './Drawer';
 import Post from './Post';
 import {connect} from 'react-redux';
@@ -9,7 +9,6 @@ const Popular = (props)=>{
     
     //test function for getting comments
     const [images, setImages] = useState([]);
-    const [imagesLeft,updateImagesLeft] = useState(0);
     //will replace above function with database working fetch
     
     var locked = false;
@@ -34,10 +33,7 @@ const Popular = (props)=>{
             
             setImages([...images]);
             var left = parseRes.count.rows[0].count-images.length;
-            //console.log(left,parseRes,images.length);
-            updateImagesLeft(left);
             if(left<=0 ){
-                //console.log(imagesLeft);
                 window.removeEventListener('scroll',scroll);
             }
             // console.log("inside");
@@ -56,7 +52,6 @@ const Popular = (props)=>{
         var height = e.target.scrollingElement.clientHeight
         if(top>3*(totalHeight-height)/4){
             await getImages();
-            
             // console.log("retrieving");
         }
         locked=false;
@@ -64,20 +59,18 @@ const Popular = (props)=>{
     useEffect(()=>{
         getImages()
         window.addEventListener('scroll',scroll);
+        return function cleanup(){
+            window.removeEventListener('scroll',scroll);
+        }
     },[]);
     return(
         <Flex  display = "flex" align="center" justifyContent="center" flexDirection="column">
             <SideMenu heading="Your Popular"/>
             
-            <Stack m="20px" maxW="90%" w="500px"justify="center" align="center">
+            <Stack w = "100%" p="20px" justify="center" align="center">
                 {images.map((img,index)=>{return( 
                    <Post img={img} key={index}/>
                 )})}
-                {imagesLeft>0?<Button
-                    onClick={()=>{
-                        getImages();
-                    }}
-                >More images</Button>:null}
             </Stack>
         </Flex>
     )

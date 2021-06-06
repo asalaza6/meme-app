@@ -1,5 +1,5 @@
-import React, {Fragment, useState, useEffect} from 'react';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 //redux
 import {connect} from 'react-redux';
-import {AUTHORIZE} from './actions/authAction';
+import {LOGOUT, AUTHORIZE} from './actions/userAction';
 //components
 
 import {toast} from 'react-toastify';
@@ -28,14 +28,13 @@ import Rankings from './components/Rankings';
 toast.configure()
 
 function App(props) {
-
   const [isAuthenticated, setIsAuthenticated] = useState(props.auth);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
   }
+  console.log("isAuthenticated",props.auth,isAuthenticated);
   async function isAuth(){
-    console.log(isAuthenticated)
     //check if isAuthenticated is already true to avoid unnecessary fetch
     // isAuthenticated will be resseet
     //console.log("hello");
@@ -46,7 +45,19 @@ function App(props) {
       });
 
       const parseRes = await response.json();
-      parseRes === true ? setIsAuthenticated(true):setIsAuthenticated(false);
+      if(parseRes===true){
+        setIsAuthenticated(true);
+      }else{
+        setIsAuthenticated(false);
+        console.log(props.username, props.auth);
+        if(localStorage.token){
+          localStorage.removeItem("token");
+        }
+        if(props.username || props.auth){
+          props.logout();
+        }
+      }
+
       //console.log(parseRes);
     }catch(err){
       console.log(err.message);
@@ -57,84 +68,81 @@ function App(props) {
     isAuth();
   })
   return (
-  <Fragment>
     <Router>
-      <div>
-        <Switch>
-        <Route exact path = "/" render={props=>
+      <Switch>
+      <Route exact path = "/" render={(props)=>{
+        if(isAuthenticated){
+          return <Feed {...props}/>
+        }else{
+          return <Home {...props}/>
+        }}
+      }/>
+      <Route 
+        exact path = "/login" 
+        render={props=>
           !isAuthenticated ? (
-            <Home {...props}/>
+            <Login {...props} setAuth = {setAuth}/>
           )
             :(
-            <Feed {...props}/>
+            <Redirect to = "/"/>
+          )
+        }/>
+        <Route exact path = "/upload" render={props=>
+          isAuthenticated ? (
+            <Upload {...props} setAuth = {setAuth}/>
+          )
+          :(
+            <Redirect to = "/"/>
+          )
+        }/>
+        <Route exact path = "/popular" render={props=>
+          isAuthenticated ? (
+            <Popular {...props} setAuth = {setAuth}/>
+          )
+          :(
+            <Redirect to = "/"/>
+          )
+        }/>
+        <Route exact path = "/rankings" render={props=>
+          isAuthenticated ? (
+            <Rankings {...props} setAuth = {setAuth}/>
+          )
+          :(
+            <Redirect to = "/"/>
+          )
+        }/>
+        <Route exact path = "/contests" render={props=>
+          isAuthenticated ? (
+            <Contests {...props} setAuth = {setAuth}/>
+          )
+          :(
+            <Redirect to = "/"/>
           )
         }/>
         <Route 
-          exact path = "/login" 
-          render={props=>
-            !isAuthenticated ? (
-              <Login {...props} setAuth = {setAuth}/>
-            )
-              :(
-              <Redirect to = "/"/>
-            )
-          }/>
-          <Route exact path = "/upload" render={props=>
-            isAuthenticated ? (
-              <Upload {...props} setAuth = {setAuth}/>
-            )
-            :(
-              <Redirect to = "/"/>
-            )
-          }/>
-          <Route exact path = "/popular" render={props=>
-            isAuthenticated ? (
-              <Popular {...props} setAuth = {setAuth}/>
-            )
-            :(
-              <Redirect to = "/"/>
-            )
-          }/>
-          <Route exact path = "/rankings" render={props=>
-            isAuthenticated ? (
-              <Rankings {...props} setAuth = {setAuth}/>
-            )
-            :(
-              <Redirect to = "/"/>
-            )
-          }/>
-          <Route exact path = "/contests" render={props=>
-            isAuthenticated ? (
-              <Contests {...props} setAuth = {setAuth}/>
-            )
-            :(
-              <Redirect to = "/"/>
-            )
-          }/>
-          <Route 
-            exact path = "/register" 
-            render={props=> !isAuthenticated ?
-            <Register {...props} setAuth = {setAuth}/>:<Redirect to="/"/>
-          }/>
-          
-          <Route path = "/:username"  render={({match})=> 
-          isAuthenticated ?
-            <Dashboard match = {match}  setAuth = {setAuth}/>:<Redirect to="/"/>
-          }/>
-        </Switch>
-      </div>
+          exact path = "/register" 
+          render={props=> !isAuthenticated ?
+          <Register {...props} setAuth = {setAuth}/>:<Redirect to="/"/>
+        }/>
+        
+        <Route path = "/:username"  render={({match})=> 
+        isAuthenticated ?
+          <Dashboard match = {match}  setAuth = {setAuth}/>:<Redirect to="/"/>
+        }/>
+      </Switch>
     </Router>
-  </Fragment>);
+  );
 }
 const mapStateToProps = state => ({
   username: state.user.username,
-  auth: state.auth.auth
+  auth: state.user.auth
 });
 
 const mapDispatchToProps = (dispatch) =>{
   return {
       // addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
-      authorize: (auth) => dispatch({type: AUTHORIZE, payload: {auth}})
+      authorize: (auth) => dispatch({type: AUTHORIZE, payload: {auth}}),
+      logout: ()=>dispatch({type: LOGOUT})
   }
 };
 export default connect(mapStateToProps,mapDispatchToProps)(App);

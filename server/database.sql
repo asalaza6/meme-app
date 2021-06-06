@@ -16,7 +16,7 @@ CREATE TABLE users(
 --updated images table
 CREATE TABLE images(
     image_id uuid DEFAULT uuid_generate_v4(),
-    user_name VARCHAR(255) NOT NULL REFERENCES users(user_name),
+    user_name VARCHAR(255) NOT NULL REFERENCES users(user_name) ON DELETE CASCADE,
     image_type VARCHAR(255) NOT NULL,
     create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2),
     PRIMARY KEY(image_id)
@@ -25,8 +25,8 @@ CREATE TABLE images(
 --updated comments table
 CREATE TABLE comments(
     comment_id uuid DEFAULT uuid_generate_v4(),
-    image_id uuid NOT NULL REFERENCES images(image_id),
-    user_name VARCHAR(255) REFERENCES users(user_name),
+    image_id uuid NOT NULL REFERENCES images(image_id) ON DELETE CASCADE,
+    user_name VARCHAR(255) REFERENCES users(user_name) ON DELETE CASCADE,
     comment_content VARCHAR(255) NOT NULL,
     create_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP(2),
     PRIMARY KEY(comment_id)
@@ -34,14 +34,14 @@ CREATE TABLE comments(
 
 --update likes table
 CREATE TABLE likes(
-    image_id uuid NOT NULL REFERENCES images(image_id),
+    image_id uuid NOT NULL REFERENCES images(image_id) ON DELETE CASCADE,
     user_name VARCHAR(255) NOT NULL REFERENCES users(user_name),
     PRIMARY KEY(image_id, user_name)
 );
 
 -- follows table
 CREATE TABLE follows(
-    followee VARCHAR(255) REFERENCES users(user_name),
-    follower VARCHAR(255) REFERENCES users(user_name),
+    followee VARCHAR(255) REFERENCES users(user_name ON DELETE CASCADE),
+    follower VARCHAR(255) REFERENCES users(user_name) ON DELETE CASCADE,
     PRIMARY KEY (followee,follower)
 );

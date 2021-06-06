@@ -62,6 +62,9 @@ const Home = (props)=>{
     useEffect(()=>{
         getImages()
         window.addEventListener('scroll',scroll);
+        return function cleanup(){
+            window.removeEventListener('scroll',scroll);
+        }
     },[]);
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
@@ -85,7 +88,7 @@ const Home = (props)=>{
                     </Link>
                 </Flex>
             </Flex>
-            <Stack m="20px" maxW="90%" justify="center" align="center">
+            <Stack w = "100%" p="20px" justify="center" align="center">
                 {images.map((img,index)=>{return( 
                    <Post offline = {true} img={img} key={index}/>
                 )})}

@@ -3,8 +3,7 @@ import {toast} from 'react-toastify';
 import configs from '../config';
 import {Heading, Flex, Button, Input, Stack } from "@chakra-ui/react";
 import {connect} from 'react-redux';
-import {ADD_USER} from '../actions/userAction';
-import {AUTHORIZE} from '../actions/authAction';
+import {ADD_USER, AUTHORIZE} from '../actions/userAction';
 const Login = (props)=>{
     const [inputs, setInputs] = useState({
         email: "",
@@ -69,9 +68,6 @@ const Login = (props)=>{
         </Flex>
     )
 }
-const mapStateToProps = state => ({
-    username: state.user.currentUser
-});
 
 const mapDispatchToProps = (dispatch) =>{
     return {

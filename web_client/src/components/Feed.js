@@ -64,6 +64,10 @@ const Feed = (props)=>{
     useEffect(()=>{
         getImages()
         window.addEventListener('scroll',scroll);
+
+        return function cleanup(){
+            window.removeEventListener('scroll',scroll);
+        }
     },[]);
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
@@ -76,7 +80,7 @@ const Feed = (props)=>{
                     Use the search bar to find your friends!
                 </Text>:null
             }
-            <Stack m="20px" maxW="90%" w="500px"justify="center" align="center">
+            <Stack w = "100%" p="20px" justify="center" align="center">
                 {images.map((img,index)=>{return( 
                    <Post img={img} key={index}/>
                 )})}

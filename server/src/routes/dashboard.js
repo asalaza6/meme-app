@@ -3,19 +3,7 @@ const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const configs = require('../config');
 
-router.get("/", authorization, async (req, res)=>{
-    //console.log(req.user);
-    try {
 
-        const user = await pool.query("SELECT * FROM users WHERE user_name = $1",[
-            req.user
-        ]);
-        res.json(user.rows[0]);
-    }catch(err){
-        console.log(err.message);
-        res.status(500).json("Server Error");
-    }
-});
 router.get("/images", authorization, async (req, res)=>{
     try {
         
@@ -145,10 +133,9 @@ router.get("/deletepost", authorization, async (req, res)=>{
     try {
         const deletePost = await pool.query(
             "DELETE FROM images WHERE image_id = $1 AND user_name = $2 RETURNING *",
-            [req.header("image"),req.header("user")]);
+            [req.header("image"),req.user]);
         //console.log(deletePost.rows, deletePost.rows.length);
         if(!deletePost.rows.length){
-            console.log("hre")
             throw "User not authorized to delete comment";
         }
         

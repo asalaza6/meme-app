@@ -16,7 +16,7 @@ const Rankings = ()=>{
                 }
             });
             const parseRes = await response.json();
-            console.log(parseRes);
+            // console.log(parseRes);
             for(var i = 0;i<parseRes.rows.length;i++){
                 //will add to database later
                 champions.push(parseRes.rows[i]);

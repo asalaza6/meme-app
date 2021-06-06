@@ -1,6 +1,9 @@
-import {ADD_USER} from '../actions/userAction';
+import {ADD_USER, LOGOUT, AUTHORIZE} from '../actions/userAction';
+
+
 const initialState = {
-    username: "noone"
+    username: null,
+    auth: false
 }
 
 
@@ -11,6 +14,13 @@ export default function userReducer(state = initialState, action){
             //console.log(action.payload)
             return {...state, 
             username: action.payload.username}
+        case LOGOUT:
+            console.log("loggin out")
+            return {username: null,auth:false}
+        case AUTHORIZE:
+            //console.log(action.payload);
+            return {...state, 
+            auth: true}
         default:
             return state
     }
