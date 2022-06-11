@@ -1,5 +1,5 @@
 [build]
-  functions = "functions"
+  functions = "netlify-express-master/functions"
 
 [dev]
-  publish = "dist"
+  publish = "netlify-express-master/dist"
