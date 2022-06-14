@@ -2,7 +2,7 @@ import React, {useState, useEffect}  from 'react';
 import {Box, Avatar,Flex, Text} from "@chakra-ui/react";
 import SideMenu from './Drawer'
 import configs from '../config';
-import {Link } from 'react-router-dom';
+import Link from 'next/link';
 const Rankings = ()=>{
     const [champions, setChampions] = useState([]);
     
@@ -38,7 +38,7 @@ const Rankings = ()=>{
             <Box maxW = "900px" direction="column">
                 {champions.map((champion,index)=>{
                     return(
-                        <Link key = {index} style = {{textDecoration:'none'}} to ={"/"+champion.user_name}>
+                        <Link key = {index} style = {{textDecoration:'none'}} href={"/"+champion.user_name}>
                             <Flex shadow="inner" align="center"  fontFamily = "mono" borderRadius="10px" p = "30px" m = "10px"  direction = "row">
                                 <Text m = "20px" fontSize="xx-large" color={index === 0 ? "gold":index === 1 ?"silver":index === 2 ?"brown":"black"} fontWeight="800">{index + 1}</Text>
                                 <Avatar  size="xl" src={configs.images.profileLocation+champion.user_name+".jpeg"} />

@@ -1,8 +1,7 @@
 
 import React,{useState} from "react";
-import { Link} from 'react-router-dom';
+import Link from 'next/link';
 import {connect} from 'react-redux';
-import {Link as Link2} from 'react-router-dom';
 import configs from '../config';
 import {Avatar,Text,Box, Flex, Button, Input } from "@chakra-ui/react";
 import { Drawer, DrawerOverlay,DrawerFooter, DrawerBody,DrawerCloseButton,DrawerHeader,DrawerContent, Heading, IconButton,  useDisclosure } from "@chakra-ui/react";
@@ -18,7 +17,7 @@ const SideMenu = ({heading,username})=>{
             const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/searchusers`,{
                 method: "GET",
                 headers:{
-                    token: localStorage.token,
+                   hrefken: localStorage.token,
                     search: searchText
                 }
             });
@@ -61,30 +60,30 @@ const SideMenu = ({heading,username})=>{
                     <DrawerHeader>Memechampion.com</DrawerHeader>
 
                     <DrawerBody>
-                        <Link  to="/">
+                        <Link href="/">
                             <Button variant="ghost" w = "100%" textAlign="left">Your Feed</Button>
                         </Link>
-                        <Link  to="/popular">
+                        <Link href="/popular">
                             <Button variant="ghost" w = "100%" textAlign="left">Popular</Button>
                         </Link>
-                        <Link  to="/rankings">
+                        <Link href="/rankings">
                             <Button variant="ghost" w = "100%" textAlign="left">Champion Rankings</Button>
                         </Link>
-                        <Link  to={"/"+username}>
+                        <Link href={"/"+username}>
                             <Button variant="ghost" w = "100%" textAlign="left">Profile</Button>
                         </Link>
-                        <Link  to="/upload">
+                        <Link href="/upload">
                             <Button variant="ghost" w = "100%" textAlign="left">Upload A New Meme</Button>
                         </Link>
                         
-                        <Link  to="/contests">
+                        <Link href="/contests">
                             <Button variant="ghost" w = "100%" textAlign="left">Contests</Button>
                         </Link>
                         <Box h="20px"></Box>
                         <Input placeholder="Search Users" onChange={(evt)=>{searchUsers(evt.target.value)}}/>
                         {users.map((user,index)=>{
                             return (
-                            <Link2 key = {index} to ={"/"+user.user_name}>
+                            <Link key = {index} href={"/"+user.user_name}>
                                 <Button >
                                 <Box flex={1} justifyContent="center">
                                         <Avatar size="sm" name="Segun Adebayo" src="https://i.pravatar.cc/300" />{" "}
@@ -93,7 +92,7 @@ const SideMenu = ({heading,username})=>{
                                         {user.user_name}
                                     </Text>
                                 </Button>
-                            </Link2>)
+                            </Link>)
                         })}
                     </DrawerBody>
 

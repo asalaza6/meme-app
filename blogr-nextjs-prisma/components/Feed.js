@@ -88,8 +88,9 @@ const Feed = (props)=>{
         </Flex>
     )
 }
-const mapStateToProps = state => ({
-    username: state.user.username
-})
-export default connect(mapStateToProps,null)(Feed);
+// const mapStateToProps = state => ({
+//     username: state.user.username
+// })
+// export default connect(mapStateToProps,null)(Feed);
+export default Feed;
 

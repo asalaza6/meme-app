@@ -1,61 +1,70 @@
-import React from "react"
-import { GetServerSideProps } from "next"
-import Home from "../components/Home";
+import React, {useState, useEffect} from 'react';
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const feed = [
-//     {
-//       id: "1",
-//       title: "Prisma is the perfect ORM for Next.js",
-//       content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-//       published: false,
-//       author: {
-//         name: "Nikolas Burk",
-//         email: "burk@prisma.io",
-//       },
-//     },
-//   ]
-//   return { props: { feed } }
-// }
+//redux
+import {connect} from 'react-redux';
+import {LOGOUT, AUTHORIZE} from '../actions/userAction';
+//components
 
-// type Props = {
-//   feed: PostProps[]
-// }
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// async function login(): Promise<void> {
-//   const payload = {
-//     email: 'testemail@gmail.com',
-//     password: 'password'
-//   }
-//   console.log('login started');
-//   const results = await fetch(`/api/login`, {
-//     method: 'POST',
-//     body: JSON.stringify(payload),
-//   });
-//   console.log(results);
-// }
+import Home from '../components/Home';
+import Feed from '../components/Feed';
 
-// async function register(): Promise<void> {
-//   const payload = {
-//     email: 'test2crazyemail@gmail.com',
-//     password: 'password',
-//     name: 'ALEX2azyazy',
-//   }
-//   console.log('register started');
-//   const results = await fetch(`/api/register`, {
-//     method: 'POST',
-//     body: JSON.stringify(payload),
-//   });
-//   console.log(results);
-// }
+toast.configure()
 
-// const Blog: React.FC<Props> = (props) => {
-//   return (
-//     <Layout>
-//       <button onClick={(login)}>login</button>
-//       <button onClick={(register)}>register</button>
-//     </Layout>
-//   )
-// }
+function App(props) {
+  const [isAuthenticated, setIsAuthenticated] = useState(props.auth);
 
-export default Home;
+  async function isAuth(){
+    //check if isAuthenticated is already true to avoid unnecessary fetch
+    // isAuthenticated will be resseet
+    //console.log("hello");
+    try{
+      const response = await fetch(`/api/verify`,{
+        method: "GET",
+        headers: {token: localStorage.token}
+      });
+
+      const parseRes = await response.json();
+      if(parseRes===true){
+        setIsAuthenticated(true);
+      }else{
+        setIsAuthenticated(false);
+        console.log(props.username, props.auth);
+        if(localStorage.token){
+          localStorage.removeItem("token");
+        }
+        if(props.username || props.auth){
+          props.logout();
+        }
+      }
+
+      //console.log(parseRes);
+    }catch(err){
+      console.log(err.message);
+    }
+    return isAuthenticated;
+  }
+  useEffect(()=>{
+    isAuth();
+  })
+  if (isAuthenticated) {
+    return <Feed username={props.username}/>
+  } else {
+    return <Home />
+  }
+}
+const mapStateToProps = state => ({
+  username: state.user.username,
+  auth: state.user.auth
+});
+
+const mapDispatchToProps = (dispatch) =>{
+  return {
+      // addUser : (username, id) => dispatch({type: ADD_USER,payload: {username, id}}),
+      authorize: (auth) => dispatch({type: AUTHORIZE, payload: {auth}}),
+      logout: ()=>dispatch({type: LOGOUT})
+  }
+};
+export default connect(mapStateToProps,mapDispatchToProps)(App);

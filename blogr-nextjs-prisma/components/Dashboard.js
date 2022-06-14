@@ -5,17 +5,21 @@ import Post from './Post';
 import {Box, Stack,Avatar, Heading,  Button, Flex, Text, Input} from "@chakra-ui/react";
 import SideMenu from "./Drawer";
 import {connect} from 'react-redux';
+import { useRouter } from 'next/router';
 
 import Compress from "react-image-file-resizer";
 
 class Dashboard extends React.Component {
+    // const router = useRouter();
+    // const { usernam } = router.query;
     constructor(props){
         super(props);
         //console.log(props);
         this.state = {
             name:"",
             images:[],
-            owner: this.props.match.params.username === this.props.username,
+            // owner: this.props.match.params.username === this.props.username,
+            owner: false,
             following:false,
             uploadOpen: false,
             uploadContents: null,

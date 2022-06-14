@@ -4,7 +4,17 @@ import configs from '../config';
 import {Heading, Flex, Button, Input, Stack } from "@chakra-ui/react";
 import {connect} from 'react-redux';
 import {ADD_USER, AUTHORIZE} from '../actions/userAction';
+import { wrapper } from '../store';
+import { useRouter } from "next/router";
+
+export const getServerSideProps = wrapper.getServerSideProps(
+    ({store, req, res, ...etc}) => {
+        console.log('s s p ', store);
+    }
+);
+
 const Login = (props)=>{
+    const router = useRouter();
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
@@ -37,10 +47,11 @@ const Login = (props)=>{
                 props.authorize(parseRes.token);
                 //console.log(parseRes);
                 //console.log(parseRes);
-                props.setAuth(true);
+                // props.setAuth(true);
+                router.push('/');
                 toast.success("login successful");
             }else{
-                props.setAuth(false);
+                // props.setAuth(false);
                 toast.error(parseRes);
             }
             

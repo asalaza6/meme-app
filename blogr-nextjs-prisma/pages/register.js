@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import configs from '../config';
 import {ADD_USER, AUTHORIZE} from '../actions/userAction';
 import {connect} from 'react-redux';
+import { useRouter } from 'next/router';
 import {Flex, Heading, Button, Input, Stack } from "@chakra-ui/react";
-const Register = ({setAuth,addUser,authorize}) =>{
+const Register = ({ addUser,authorize}) =>{
+    const router = useRouter();
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
@@ -42,7 +44,7 @@ const Register = ({setAuth,addUser,authorize}) =>{
                 addUser(parseRes.user_name);
                 authorize(parseRes.token);
                 // localStorage.setItem("user", parseRes.user_id);
-                setAuth(true);
+                router.push('/');
                 toast.success("Registered Successfully!");
             }else{
                 console.log("error parseRes");
