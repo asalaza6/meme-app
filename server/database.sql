@@ -41,7 +41,7 @@ CREATE TABLE likes(
 
 -- follows table
 CREATE TABLE follows(
-    followee VARCHAR(255) REFERENCES users(user_name ON DELETE CASCADE),
+    followee VARCHAR(255) REFERENCES users(user_name) ON DELETE CASCADE,
     follower VARCHAR(255) REFERENCES users(user_name) ON DELETE CASCADE,
-    PRIMARY KEY (followee,follower)
+    PRIMARY KEY (followee, follower)
 );
