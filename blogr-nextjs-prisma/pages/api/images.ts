@@ -2,7 +2,6 @@
 
 import prisma from '../../lib/prisma';
 import { jwtGenerator } from '../../utils/jwtGenerator';
-import bcrypt from 'bcryptjs';
 
 // PUT /api/publish/:id
 export default async function handle(req, res) {
@@ -11,6 +10,9 @@ export default async function handle(req, res) {
             select: {
               image_id: true,
               image_type: true,
+            },
+            orderBy: {
+                create_timestamp: 'desc',
             },
             take: 4,
             skip: req.header("count")

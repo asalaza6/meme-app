@@ -54,6 +54,33 @@ export default async function handle(req, res) {
             take: 4,
             skip: count,
         });
+
+        const feedImages3 = await prisma.images.findMany({
+            select: {
+                image_id: true,
+                user_name: true,
+                image_type: true,
+            },
+            where: {
+                users: {
+                    OR: {
+                        user_name: user_name,
+                        follows_follows_followeeTousers: {
+                            some: {
+                                users_follows_followeeTousers: {
+                                    user_name: user_name,
+                                }
+                            }
+                        }
+                    }
+                },
+            },
+            orderBy: {
+                create_timestamp: 'desc',
+            },
+            take: 4,
+            skip: count,
+        })
         // const count = prisma.images.findMany({})
         const more = feedImages2.length !== 0;
         // const feedImages = await prisma.users.findFirst({

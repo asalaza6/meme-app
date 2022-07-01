@@ -13,14 +13,29 @@ export default async function handle(req, res) {
         const { email, password } = req.body;
 
         //2. check if user doesn't exist
-
-        // const user = await pool.query("SELECT * FROM users where user_email = $1",[email]);
-        const user = await prisma.users.findMany({
+        const count = await prisma.comments.count({
             where: {
-                user_email: email,
+                image_id: req.header('image'),
             }
         })
-        return res.json({});
+        // const user = await pool.query("SELECT * FROM users where user_email = $1",[email]);
+        const comments = await prisma.comments.findMany({
+            select: {
+                comment_content: true,
+                create_timestamp: true,
+                comment_id: true,
+                user_name: true,
+            },
+            where: {
+                image_id: req.header('image'),
+            },
+            orderBy: {
+                create_timestamp: 'desc',
+            },
+            take: 4,
+            skip: req.header("count"),
+        })
+        return res.json({comments,count});
     } catch(err: any){
         console.log(err.message);
         res.status(500).send("Server Error");
