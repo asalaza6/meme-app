@@ -59,7 +59,6 @@ const Feed = (props)=>{
         locked=false;
     }
     useEffect(()=>{
-        console.log('useeffect');
         getImages();
         window.addEventListener('scroll',scroll);
 

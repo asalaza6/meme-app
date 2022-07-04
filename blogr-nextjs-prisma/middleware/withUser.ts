@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 const withProtect = (handler) => {
   return async (req, res) => {
-    console.log(req.headers);
     const jwtToken = req.headers["token"];
 
     if(!jwtToken){
