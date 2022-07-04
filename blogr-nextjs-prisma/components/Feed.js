@@ -27,6 +27,8 @@ const Feed = (props)=>{
         if (!parseRes || !parseRes.images){
             return;
         }
+        // console.log(parseRes);
+        for(var i = 0;i<parseRes.images.length;i++){
             //will add to database later
             images.push(parseRes.images[i]);
         }
