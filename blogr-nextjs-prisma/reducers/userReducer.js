@@ -3,7 +3,7 @@ import {ADD_USER, LOGOUT, AUTHORIZE} from '../actions/userAction';
 
 const initialState = {
     username: null,
-    auth: false
+    token: null,
 }
 
 
@@ -19,8 +19,10 @@ export default function userReducer(state = initialState, action){
             return {username: null,auth:false}
         case AUTHORIZE:
             //console.log(action.payload);
-            return {...state, 
-            auth: true}
+            return {
+                ...state, 
+                token: action.payload.token
+            }
         default:
             return state
     }

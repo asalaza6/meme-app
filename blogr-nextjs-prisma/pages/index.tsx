@@ -10,7 +10,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Home from '../components/Home';
 import Feed from '../components/Feed';
-
+import { wrapper } from '../store';
+export const getServerSideProps = wrapper.getServerSideProps(store => ({req, res, ...etc}): any => {
+  return {
+      props: {
+          test: 'test',
+      }
+  }
+}
+);
 toast.configure()
 
 function App(props) {
@@ -31,7 +39,6 @@ function App(props) {
         setIsAuthenticated(true);
       }else{
         setIsAuthenticated(false);
-        console.log(props.username, props.auth);
         if(localStorage.token){
           localStorage.removeItem("token");
         }

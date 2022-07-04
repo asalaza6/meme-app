@@ -7,10 +7,14 @@ import {ADD_USER, AUTHORIZE} from '../actions/userAction';
 import { wrapper } from '../store';
 import { useRouter } from "next/router";
 
-export const getServerSideProps = wrapper.getServerSideProps(
-    ({store, req, res, ...etc}) => {
-        console.log('s s p ', store);
+export const getServerSideProps = wrapper.getServerSideProps(store => ({req, res, ...etc}) => {
+    res.store = store;
+    return {
+        props: {
+            test: 'test',
+        }
     }
+  }
 );
 
 const Login = (props)=>{
@@ -40,7 +44,7 @@ const Login = (props)=>{
                 });
 
             const parseRes = await response.json();
-            if(parseRes.token){
+            if (parseRes.token) {
                 localStorage.setItem("token", parseRes.token);
                 //console.log(props,"add",parseRes);
                 props.addUser(parseRes.user_name);
@@ -82,8 +86,8 @@ const Login = (props)=>{
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        addUser : (username) => dispatch({type: ADD_USER,payload: {username}}),
-        authorize: (token) => dispatch({type: AUTHORIZE, payload: {token}})
+        addUser: (username) => dispatch({type: ADD_USER, payload: { username }}),
+        authorize: (token) => dispatch({type: AUTHORIZE, payload: { token }})
     }
 };
 export default connect(null,mapDispatchToProps)(Login);

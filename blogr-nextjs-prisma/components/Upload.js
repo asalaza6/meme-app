@@ -42,11 +42,11 @@ const Upload = ()=>{
         }
         let body = {
             content:preview,
-            type: "post"
+            type: "post",
         }
         //console.log(body);
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/upload`,{
+            const response = await fetch(`/api/upload`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,

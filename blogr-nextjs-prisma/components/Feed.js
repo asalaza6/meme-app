@@ -12,37 +12,32 @@ const Feed = (props)=>{
     //will replace above function with database working fetch
     const [newcomerMessage, setNew] = useState(false);
     var locked = false;
-    async function getImages(){
+    async function getImages() {
         // let images = [];
-        try{
-            const length = images.length;
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/feedimages`,{
-                method: "GET",
-                headers:{
-                    token: localStorage.token,
-                    count: length,
-                    user_name: props.username
-                }
-            });
-            const parseRes = await response.json();
-            // console.log(parseRes);
-            for(var i = 0;i<parseRes.images.rows.length;i++){
-                //will add to database later
-                images.push(parseRes.images.rows[i]);
+        const count = images?.length || 0;
+        const response = await fetch(`/api/feedimages`,{
+            method: "GET",
+            headers:{
+                token: localStorage.token,
+                count,
+                user_name: props.username
             }
-            
-            setImages([...images]);
-            //console.log(parseRes.more);
-            
-            if(!parseRes.more){
-                if(images.length===0){
-                    setNew(true);
-                }
-                window.removeEventListener('scroll',scroll);
+        });
+        const parseRes = await response.json();
+        if (!parseRes || !parseRes.images){
+            return;
+        }
+            //will add to database later
+            images.push(parseRes.images[i]);
+        }
+        
+        setImages([...images]);
+        
+        if(!parseRes.more){
+            if(images.length===0){
+                setNew(true);
             }
-            // console.log("inside");
-        }catch(err){
-            console.log(err.message);
+            window.removeEventListener('scroll',scroll);
         }
         
     }  
@@ -62,7 +57,8 @@ const Feed = (props)=>{
         locked=false;
     }
     useEffect(()=>{
-        getImages()
+        console.log('useeffect');
+        getImages();
         window.addEventListener('scroll',scroll);
 
         return function cleanup(){
@@ -71,7 +67,8 @@ const Feed = (props)=>{
     },[]);
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
-            <SideMenu heading="Your Feed"/>
+            <SideMenu heading="Your Feed 2"/>
+            <button onClick={getImages} >TEST</button>
             {newcomerMessage?
                 <Text textAlign="center" fontSize="15pt" w="80%" m = "40px">
                     Follow other memers or upload your own meme to populate your Feed! <br/>

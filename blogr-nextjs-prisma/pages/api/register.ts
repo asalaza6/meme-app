@@ -8,7 +8,7 @@ import { jwtGenerator } from '../../utils/jwtGenerator';
 // PUT /api/publish/:id
 export default async function handle(req: NextApiRequest, res:NextApiResponse) {
     //1. destructure the req.body (name email password)
-    console.log(req, req.body);
+    // console.log(req, req.body);
     var { name, email, password } = req.body;
     name = name.toLowerCase();
     //2. check if user exists (if user exists throw error)

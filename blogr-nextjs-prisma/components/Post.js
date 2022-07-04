@@ -247,6 +247,7 @@ class Post extends React.Component {//({img,index})=>
             image_id:this.props.img.image_id,
             image_type: this.props.img.image_type,
             image_user: this.props.img.user_name,
+            image_url: this.props.img.url,
             number_likes: 0,
             offline: this.props.offline
         });
@@ -302,7 +303,7 @@ class Post extends React.Component {//({img,index})=>
                 </Box>:null}
                 
             </Flex>
-            <Image w = "100%" alt= "BIG MEME"  key = {this.props.index}src={configs.images.postLocation+this.state.image_id+"."+this.state.image_type}/>
+            <Image w = "100%" alt= "BIG MEME"  key = {this.props.index}src={this.state.image_url}/>
             <Flex bg = "white" direction="row">
                 <IconButton
                     p = "20px" variant="ghost" h = "30px"  flex={1}

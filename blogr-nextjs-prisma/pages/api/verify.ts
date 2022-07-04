@@ -12,11 +12,11 @@ export default async function handle(req: NextApiRequest, res:NextApiResponse) {
     const jwtToken = req.headers["token"];
     
     if(!jwtToken){
-        return res.status(403).json("Not Authorized")
+        return res.status(403).json("Not Authorized");
     }
     try {
         
-        const payload = jwt.verify(jwtToken, process.env.jwtSecret);
+        const payload = jwt.verify(jwtToken, process.env.JWT_SECRET);
         const user = payload.user;
         res.json(true);
     } catch (err) {

@@ -31,6 +31,7 @@ model images {
   user_name        String     @db.VarChar(255)
   image_type       String     @db.VarChar(255)
   create_timestamp DateTime?  @default(dbgenerated("CURRENT_TIMESTAMP(2)")) @db.Timestamp(6)
+  url              String?    @db.VarChar
   users            users      @relation(fields: [user_name], references: [user_name], onDelete: Cascade, onUpdate: NoAction)
   comments         comments[]
   likes            likes[]
