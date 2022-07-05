@@ -63,6 +63,11 @@ const handler = async function handle(req, res) {
                 user_name: true,
                 image_type: true,
                 url: true,
+                users: {
+                    select: {
+                        user_image: true
+                    }
+                }
             },
             where: {
                 OR: [
@@ -73,7 +78,7 @@ const handler = async function handle(req, res) {
                         users: {
                             follows_follows_followeeTousers: {
                                 some: {
-                                    users_follows_followeeTousers: {
+                                    users_follows_followerTousers: {
                                         user_name: user_name,
                                     }
                                 }

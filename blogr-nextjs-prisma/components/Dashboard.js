@@ -11,25 +11,28 @@ import Compress from "react-image-file-resizer";
 
 class Dashboard extends React.Component {
     // const router = useRouter();
-    // const { usernam } = router.query;
+    // const { usernam } = this.props.router.query;
     constructor(props){
         super(props);
         //console.log(props);
+        const { username: pageUsername } = props.router.query;
         this.state = {
             name:"",
             images:[],
-            // owner: this.props.match.params.username === this.props.username,
-            owner: false,
+            pageUsername,
+            owner: pageUsername === props.username,
             following:false,
             uploadOpen: false,
             uploadContents: null,
-            uploadFile: null //check if profile image exists
+            uploadFile: null, //check if profile image exists
+            profilePic: null,
         }
         //check if profile image exists
 
         //console.log(configs.images.profileLocation+this.props.username);
         
         this.getProfileImages = this.getProfileImages.bind(this);
+        this.getProfilePic = this.getProfilePic.bind(this);
         this.logout = this.logout.bind(this);
         this.follow = this.follow.bind(this);
         this.isFollowing = this.isFollowing.bind(this);
@@ -37,32 +40,54 @@ class Dashboard extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    async getProfileImages(){
-        let images = [];
-        let param = "";
-        if(this.props.match){
-            param = this.props.match.params.username;
-        }
+    async getProfilePic(){
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/profileimages`,{
+            const response = await fetch(`/api/profilepic`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
-                    name: param
+                    name: this.state.pageUsername
                 }
             });
             const parseRes = await response.json();
+            if (!parseRes || !parseRes.url){
+                return;
+            }
+            this.setState({
+                profilePic: parseRes.url,
+            });
+            
+        }catch(err){
+            console.log(err.message);
+        }
+
+    }
+
+    async getProfileImages(){
+        let images = [];
+        try{
+            const response = await fetch(`/api/profileimages`,{
+                method: "GET",
+                headers:{
+                    token: localStorage.token,
+                    name: this.state.pageUsername
+                }
+            });
+            const parseRes = await response.json();
+            if (!parseRes || !parseRes.images){
+                return;
+            }
             //console.log(parseRes);
-            for(var i = 0;i<parseRes.rows.length;i++){
+            for(var i = 0;i<parseRes.images.length;i++){
                 //will add to database later
-                images.push(parseRes.rows[i]);
+                images.push(parseRes.images[i]);
             }
             
         }catch(err){
             console.log(err.message);
         }
         //console.log(images);
-        this.setState({images:images});
+        this.setState({ images });
 
     }
     logout(e){
@@ -76,12 +101,12 @@ class Dashboard extends React.Component {
         e.preventDefault();
         // use this.props.username and followee's username to send follow request and 
         let body = {
-            follower:this.props.username,
-            followee: this.props.match.params.username,
+            follower: this.props.username,
+            followee: this.state.pageUsername,
             state: this.state.following
         }
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/follow`,{
+            const response = await fetch(`/api/follow`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -91,8 +116,9 @@ class Dashboard extends React.Component {
             });
             // const parseRes = await response.json();
             //console.log("follow",parseRes);
-            this.setState({following:!this.state.following});
-            toast.success(`${this.state.following?"Follow":"Unfollow"} successfully`);
+            this.setState({following:!this.state.following}, () => {
+                toast.success(`${this.state.following?"Follow":"Unfollow"} successfully`);
+            });
         }catch(err){
             console.log(err.message);
         }
@@ -101,12 +127,12 @@ class Dashboard extends React.Component {
         // use this.props.username and followee's username to check if following
         
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/follow`,{
+            const response = await fetch(`/api/follow`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
-                    follower:this.props.username,
-                    followee: this.props.match.params.username
+                    follower: this.props.username,
+                    followee: this.state.pageUsername,
                 }
             });
             const parseRes = await response.json();
@@ -118,24 +144,31 @@ class Dashboard extends React.Component {
         //console.log(images);
     }
     componentDidUpdate(){
-        if(this.props.match.params.username !== this.state.name){
+        const { username: pageUsername } = this.props.router.query;
+        if(this.state.pageUsername !== pageUsername){
             //console.log(this.props.match);
-            const {params: {username}} = this.props.match;
-            this.setState({name:username,owner:this.props.match.params.username === this.props.username});
-            this.getProfileImages();
-            this.isFollowing();
+            this.setState(
+                {
+                    pageUsername, 
+                    owner: pageUsername === this.props.username
+                },
+                () => {
+                    this.getProfilePic();
+                    this.getProfileImages();
+                    this.isFollowing();
+                });
         }
     }
     componentDidMount(){
+        const { username: pageUsername } = this.props.router.query;
         //console.log("mount");
-        if(this.props.match){
-            const {params: {username}} = this.props.match;
-            this.setState({name:username});
-        }else{
-            this.getName();
+        if(pageUsername){
+            this.setState({pageUsername}, () => {
+                this.getProfilePic();
+                this.getProfileImages();
+                this.isFollowing();
+            });
         }
-        this.getProfileImages();
-        this.isFollowing();
         //console.log("useeffect");
     }
     async handleSubmit(){
@@ -147,12 +180,12 @@ class Dashboard extends React.Component {
         let body = {
             name:this.state.uploadFile.name,
             content:this.state.uploadContents,
-            type: "profile",
+            folder: "profile",
             user_name:this.props.username
         }
         
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/upload`,{
+            const response = await fetch(`/api/upload`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -203,11 +236,11 @@ class Dashboard extends React.Component {
     render(){
     return (
         <Box minH = "100vh" w = "100%" alignItems="center" flexDirection="column" display = "flex">
-            <SideMenu heading={this.state.name}/>
+            <SideMenu heading={this.state.pageUsername}/>
             
             <Flex direction = "column" align = "center" w = "100%" maxW="700px">
                 <Box rounded="md" align="center" width="200px" h= "200px" position = "relative" >
-                    <Avatar boxShadow = "xl" size="full" src={configs.images.profileLocation+this.state.name+".jpeg"} />
+                    <Avatar boxShadow = "xl" size="full" src={this.state.profilePic} />
                     {this.state.owner?(this.state.uploadOpen?
                     <Box boxShadow = "xl" p = "10px"  rounded="md" bg = "white"  left="0" top ="0" bottom ="0" position="absolute"   >
                         <Input size="xs"  p = "0" m = "0" onInput={this.onChange} accept="image/png, image/jpeg" type="file"/>
@@ -242,5 +275,9 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => ({
     username: state.user.username
 })
-export default connect(mapStateToProps,null)(Dashboard);
+const DasboardWithRouter = (props) => {
+    const router = useRouter();
+    return <Dashboard {...props} router={router} />
+}
+export default connect(mapStateToProps,null)(DasboardWithRouter);
 

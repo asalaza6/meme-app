@@ -6,7 +6,7 @@ import configs from '../config';
 import {Avatar,Text,Box, Flex, Button, Input } from "@chakra-ui/react";
 import { Drawer, DrawerOverlay,DrawerFooter, DrawerBody,DrawerCloseButton,DrawerHeader,DrawerContent, Heading, IconButton,  useDisclosure } from "@chakra-ui/react";
 import {HamburgerIcon} from "@chakra-ui/icons";
-const SideMenu = ({heading,username})=>{
+const SideMenu = (props)=>{
     const [users, setUsers] = useState([]);
     async function searchUsers(searchText){
         if(!searchText){
@@ -14,10 +14,10 @@ const SideMenu = ({heading,username})=>{
             return;
         }
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/searchusers`,{
+            const response = await fetch(`/api/searchusers`,{
                 method: "GET",
                 headers:{
-                   hrefken: localStorage.token,
+                    token: localStorage.token,
                     search: searchText
                 }
             });
@@ -39,13 +39,13 @@ const SideMenu = ({heading,username})=>{
             <Flex p = "30px" direction="row" justify="center" >
                 <IconButton
                     size="lg"
-                    alignSelf="flex-en"d
+                    alignSelf="flex-en"
                     icon={<HamburgerIcon/>}
                     ref={btnRef}
                     onClick={onOpen}
                 />
                 <Heading flexGrow={1}  textAlign="center" >
-                    {heading}
+                    {props.heading}
                 </Heading>
             </Flex>
             <Drawer
@@ -69,7 +69,7 @@ const SideMenu = ({heading,username})=>{
                         <Link href="/rankings">
                             <Button variant="ghost" w = "100%" textAlign="left">Champion Rankings</Button>
                         </Link>
-                        <Link href={"/"+username}>
+                        <Link href={"/"+props.username}>
                             <Button variant="ghost" w = "100%" textAlign="left">Profile</Button>
                         </Link>
                         <Link href="/upload">
@@ -86,7 +86,7 @@ const SideMenu = ({heading,username})=>{
                             <Link key = {index} href={"/"+user.user_name}>
                                 <Button >
                                 <Box flex={1} justifyContent="center">
-                                        <Avatar size="sm" name="Segun Adebayo" src="https://i.pravatar.cc/300" />{" "}
+                                        <Avatar size="sm" name={user.user_name} src={user.user_image} />{" "}
                                     </Box>
                                     <Text m ="2px" flex={9}>
                                         {user.user_name}

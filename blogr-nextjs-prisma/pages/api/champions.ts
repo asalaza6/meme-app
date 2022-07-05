@@ -21,15 +21,14 @@ export default async function handle(req, res) {
                     select: {
                         likes: true,
                     }
-                }
+                },
             },
             orderBy: {
                 likes: {
                     _count: 'desc',
                 }
             },
-            take: 4,
-            skip: req.header('count'),
+            take: 10,
         });
         return res.json(champions);
     } catch(err: any){

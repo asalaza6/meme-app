@@ -50,6 +50,7 @@ model users {
   user_name                       String     @id @db.VarChar(255)
   user_email                      String     @db.VarChar(255)
   user_password                   String     @db.VarChar(255)
+  user_image                      String?    @db.Uuid
   comments                        comments[]
   follows_follows_followeeTousers follows[]  @relation("follows_followeeTousers")
   follows_follows_followerTousers follows[]  @relation("follows_followerTousers")

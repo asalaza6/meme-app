@@ -42,7 +42,7 @@ class Post extends React.Component {//({img,index})=>
     }
     async deletePost(){
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/deletepost`,{
+            const response = await fetch(`/api/deletepost`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
@@ -62,7 +62,7 @@ class Post extends React.Component {//({img,index})=>
         
         try{
             const length = this.state.comments.length;
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/comments`,{
+            const response = await fetch(`/api/comments`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
@@ -72,11 +72,11 @@ class Post extends React.Component {//({img,index})=>
             });
             const parseRes = await response.json();
             // console.log(parseRes);
-            for(let i = 0; i < parseRes.comments.rows.length;i++){
-                this.state.comments.push(parseRes.comments.rows[i]);
+            for(let i = 0; i < parseRes.comments.length;i++){
+                this.state.comments.push(parseRes.comments[i]);
             }
             this.setState({comments:this.state.comments});
-            var left = parseRes.count.rows[0].count-this.state.comments.length;
+            var left = parseRes.count-this.state.comments.length;
             //console.log(left);
             this.setState({commentsLeft:left});
             //console.log(img.comments);
@@ -88,7 +88,7 @@ class Post extends React.Component {//({img,index})=>
     
     async checkLike(){
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/likeimage`,{
+            const response = await fetch(`/api/likeimage`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
@@ -112,7 +112,7 @@ class Post extends React.Component {//({img,index})=>
     async checkLikeOffline(){
         // console.log('offline lik')
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/offlinelike`,{
+            const response = await fetch(`/api/offlinelike`,{
                 method: "GET",
                 headers:{
                     image: this.props.img.image_id
@@ -141,7 +141,7 @@ class Post extends React.Component {//({img,index})=>
         //console.log("first",this.state);
 
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/likeimage`,{
+            const response = await fetch(`/api/likeimage`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -170,7 +170,7 @@ class Post extends React.Component {//({img,index})=>
         }
         //console.log(body);
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/comments`,{
+            const response = await fetch(`/api/comments`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -213,7 +213,7 @@ class Post extends React.Component {//({img,index})=>
             comment: comment_id,
         }
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/deletecomment`,{
+            const response = await fetch(`/api/deletecomment`,{
                 method: "POST",
                 headers:{
                     token: localStorage.token,
@@ -237,8 +237,9 @@ class Post extends React.Component {//({img,index})=>
                 image_id:this.props.img.image_id,
                 image_type: this.props.img.image_type,
                 number_likes: 0
+            }, () => {
+                this.checkLike();
             });
-            this.checkLike();
         }
     }
     componentDidMount(){
@@ -247,18 +248,20 @@ class Post extends React.Component {//({img,index})=>
             image_id:this.props.img.image_id,
             image_type: this.props.img.image_type,
             image_user: this.props.img.user_name,
+            user_image: this.props.img.users?.user_image,
             image_url: this.props.img.url,
             number_likes: 0,
             offline: this.props.offline
+        }, () => {
+            if(!this.props.offline){
+                 this.checkLike();
+            }else{
+                this.checkLikeOffline();
+            }
         });
         // console.log(this.props);
         //console.log(this.state);
        // console.log("update img");
-       if(!this.props.offline){
-            this.checkLike();
-       }else{
-           this.checkLikeOffline();
-       }
 
     }
     render(){
@@ -267,7 +270,7 @@ class Post extends React.Component {//({img,index})=>
             <Flex justify="space-between" bg="white" p = "15px" direction="row">
                 <Link style = {{textDecoration:'none'}} href={this.props.offline?"#":"/"+this.state.image_user}>
                     <Flex dir="row">
-                        <Avatar  size="md" src={configs.images.profileLocation+this.state.image_user+".jpeg"} />
+                        <Avatar  size="md" src={this.state.user_image ? this.state.user_image : null} />
                         <Text marginLeft="10px" fontWeight="600" wrap="wrap" fontSize="x-large">{this.state.image_user}</Text>
                     </Flex>
                 </Link>
@@ -318,10 +321,12 @@ class Post extends React.Component {//({img,index})=>
                     color="blue.400"
                     icon={<ChatIcon/>}
                     onClick={()=>{
-                        this.setState({comment:!this.state.comment});
-                        if(this.state.comments.length===0){
-                            this.getComments()
-                        }
+                        this.setState({comment:!this.state.comment},
+                            () => {
+                                if(this.state.comments.length===0){
+                                    this.getComments()
+                                }
+                            });
                     }}
                     />
             </Flex>
@@ -345,7 +350,7 @@ class Post extends React.Component {//({img,index})=>
                             
                             <Flex m = "2px" direction = "column" flex={1} justifyContent="center" alignItems="center">
                                 <Link key = {index} href ={this.props.offline?"#":"/"+comment.user_name}>
-                                        <Avatar  flex={4} alignSelf="center" size="md" src={configs.images.profileLocation+comment.user_name+".jpeg"} />
+                                        <Avatar  flex={4} alignSelf="center" size="md" src={comment.users?.user_image} />
                                 </Link>
                             </Flex>
                             <Flex w="20%" m = "2px" flexShrink = {1} direction = "column"  flex={9}  >

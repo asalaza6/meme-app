@@ -20,15 +20,21 @@ export default async function handle(req, res) {
                 image_id: true,
                 user_name: true,
                 image_type: true,
+                url: true,
+                users: {
+                    select: {
+                        user_image: true,
+                    }
+                }
             },
             where: {
-                user_name: req.header('name'),
+                user_name: req.headers['name'],
             },
             orderBy: {
                 create_timestamp: 'desc',
             }
         })
-        return res.json(profileImages);
+        return res.json({ images: profileImages});
     } catch(err: any){
         console.log(err.message);
         res.status(500).send("Server Error");

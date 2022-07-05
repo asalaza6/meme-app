@@ -68,8 +68,7 @@ const Feed = (props)=>{
     },[]);
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
-            <SideMenu heading="Your Feed 2"/>
-            <button onClick={getImages} >TEST</button>
+            <SideMenu heading="Your Feed"/>
             {newcomerMessage?
                 <Text textAlign="center" fontSize="15pt" w="80%" m = "40px">
                     Follow other memers or upload your own meme to populate your Feed! <br/>

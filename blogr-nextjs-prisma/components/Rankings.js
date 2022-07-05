@@ -9,7 +9,7 @@ const Rankings = ()=>{
     async function getChampions(){
         // let images = [];
         try{
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/champions`,{
+            const response = await fetch(`/api/champions`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token
@@ -17,9 +17,9 @@ const Rankings = ()=>{
             });
             const parseRes = await response.json();
             // console.log(parseRes);
-            for(var i = 0;i<parseRes.rows.length;i++){
+            for(var i = 0;i<parseRes.length;i++){
                 //will add to database later
-                champions.push(parseRes.rows[i]);
+                champions.push(parseRes[i]);
             }
             
             setChampions([...champions]);            
@@ -41,7 +41,7 @@ const Rankings = ()=>{
                         <Link key = {index} style = {{textDecoration:'none'}} href={"/"+champion.user_name}>
                             <Flex shadow="inner" align="center"  fontFamily = "mono" borderRadius="10px" p = "30px" m = "10px"  direction = "row">
                                 <Text m = "20px" fontSize="xx-large" color={index === 0 ? "gold":index === 1 ?"silver":index === 2 ?"brown":"black"} fontWeight="800">{index + 1}</Text>
-                                <Avatar  size="xl" src={configs.images.profileLocation+champion.user_name+".jpeg"} />
+                                <Avatar  size="xl" src={champion.user_image ? champion.user_image: null} />
                                 <Text m = "20px" fontFamily="cursive" fontSize="large" >{champion.user_name}</Text>
                             </Flex>
                         </Link>

@@ -15,13 +15,16 @@ cloudinary.config({
 // PUT /api/publish/:id
 const handler = async function handle(req, res) {
     // res.json({ test: 'test '});
-    let { content, type } = req.body;
+    let { content, type, folder } = req.body;
     let { user_name } = req;
+    if (!(folder === 'posts' || folder === 'profile')) {
+        return res.status(500).send( `Invalid folder ${folder}`);
+    }
     try{
         const response = await cloudinary.uploader.upload(
             content,
             {
-                folder: 'posts',
+                folder,
             },
             function(error, result) {
                 console.log(result, error)
@@ -33,14 +36,27 @@ const handler = async function handle(req, res) {
         } = response;
         if (secure_url || url) {
             // image_id === url
-            const image = await prisma.images.create({
-                data: {
-                    url: secure_url || url,
-                    user_name,
-                    image_type: '.notimportantanymore',
-                }
-            });
-            return res.json({ image, url: secure_url || url });
+            if (folder === 'posts') {
+                const image = await prisma.images.create({
+                    data: {
+                        url: secure_url || url,
+                        user_name,
+                        image_type: '.notimportantanymore',
+                    }
+                });
+                return res.json({ image, url: secure_url || url });
+            }
+            if (folder === 'profile') {
+                const user = await prisma.users.update({
+                    where: {
+                        user_name,
+                    },
+                    data: {
+                        user_image: secure_url || url,
+                    }
+                })
+                return res.json({ user, url: secure_url || url });
+            }
         } else {
             throw(Error('no secure url found (cloudinary error)!'));
         }

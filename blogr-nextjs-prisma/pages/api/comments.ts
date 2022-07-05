@@ -3,41 +3,58 @@
 import prisma from '../../lib/prisma';
 import { jwtGenerator } from '../../utils/jwtGenerator';
 import bcrypt from 'bcryptjs';
+import withProtect from '../../middleware/withUser';
 
 // PUT /api/publish/:id
-export default async function handle(req, res) {
+const handler = async function handle(req, res) {
     // res.json({ test: 'test '});
     try{
-        //1. destructure the req.body
-
-        const { email, password } = req.body;
-
-        //2. check if user doesn't exist
-        const count = await prisma.comments.count({
-            where: {
-                image_id: req.header('image'),
-            }
-        })
-        // const user = await pool.query("SELECT * FROM users where user_email = $1",[email]);
-        const comments = await prisma.comments.findMany({
-            select: {
-                comment_content: true,
-                create_timestamp: true,
-                comment_id: true,
-                user_name: true,
-            },
-            where: {
-                image_id: req.header('image'),
-            },
-            orderBy: {
-                create_timestamp: 'desc',
-            },
-            take: 4,
-            skip: req.header("count"),
-        })
-        return res.json({comments,count});
+        if (req.method === 'GET') {
+            const comments = await prisma.comments.findMany({
+                select: {
+                    comment_content: true,
+                    create_timestamp: true,
+                    comment_id: true,
+                    user_name: true,
+                    users: {
+                        select: {
+                            user_image: true,
+                        }
+                    }
+                },
+                where: {
+                    image_id: req.headers['image'],
+                },
+                orderBy: {
+                    create_timestamp: 'desc',
+                },
+                take: 4,
+                skip: parseInt(req.headers['count'], 10),
+            });
+            const count = await prisma.comments.count({
+                where: {
+                    image_id: req.headers['image'],
+                }
+            })
+            return res.json({comments, count});
+        }
+        if (req.method === 'POST') {
+            const {image: image_id, content: comment_content} = req.body;
+            const user_name = req.user_name;
+            const newComment = await prisma.comments.create({
+                data: {
+                    comment_content,
+                    image_id,
+                    user_name,
+                }
+            });
+            return res.json(newComment);
+        }
+        res.status(500).send("Invalid Method");
     } catch(err: any){
         console.log(err.message);
         res.status(500).send("Server Error");
     }
 }
+
+export default withProtect(handler);

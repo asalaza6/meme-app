@@ -1,20 +1,21 @@
 // pages/api/publish/[id].ts
 
 import prisma from '../../lib/prisma';
-import { jwtGenerator } from '../../utils/jwtGenerator';
-import bcrypt from 'bcryptjs';
 
 // PUT /api/publish/:id
 export default async function handle(req, res) {
     // res.json({ test: 'test '});
     try{
-        const image_id = req.headers['image'];
-        const number_likes = await prisma.likes.count({
+        
+        const profilePic = await prisma.users.findUnique({
+            select: {
+                user_image: true,
+            },
             where: {
-                image_id
-            }
+                user_name: req.headers['name'],
+            },
         });
-        return res.json({ number_likes })
+        return res.json({ url: profilePic.user_image });
     } catch(err: any){
         console.log(err.message);
         res.status(500).send("Server Error");

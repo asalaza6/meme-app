@@ -15,23 +15,22 @@ const Home = (props)=>{
         // let images = [];
         try{
             const length = images.length;
-            const response = await fetch(`${configs.api.url}:${configs.api.port}/dashboard/popularimages`,{
+            const response = await fetch(`/api/popularimages`,{
                 method: "GET",
                 headers:{
                     token: localStorage.token,
                     count: length,
-                    user_name: props.username
                 }
             });
             const parseRes = await response.json();
             // console.log(parseRes);
-            for(var i = 0;i<parseRes.images.rows.length;i++){
+            for(var i = 0;i<parseRes.images.length;i++){
                 //will add to database later
-                images.push(parseRes.images.rows[i]);
+                images.push(parseRes.images[i]);
             }
             
             setImages([...images]);
-            var left = parseRes.count.rows[0].count-images.length;
+            var left = parseRes.count-images.length;
             //console.log(left,parseRes,images.length);
             updateImagesLeft(left);
             if(left<=0 ){

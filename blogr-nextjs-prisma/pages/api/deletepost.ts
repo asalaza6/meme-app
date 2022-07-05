@@ -8,19 +8,15 @@ import bcrypt from 'bcryptjs';
 export default async function handle(req, res) {
     // res.json({ test: 'test '});
     try{
-        //1. destructure the req.body
-
-        const { email, password } = req.body;
-
-        //2. check if user doesn't exist
-
-        // const user = await pool.query("SELECT * FROM users where user_email = $1",[email]);
-        const user = await prisma.users.findMany({
+        const { image: image_id } = req.headers;
+        const { user_name } = req;
+        const deletePost = await prisma.images.delete({
             where: {
-                user_email: email,
+                image_id,
             }
-        })
-        return res.json({});
+        });
+        if (!deletePost) throw 'User not authorized';
+        return res.json(deletePost);
     } catch(err: any){
         console.log(err.message);
         res.status(500).send("Server Error");
