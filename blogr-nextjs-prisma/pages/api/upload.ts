@@ -27,7 +27,7 @@ const handler = async function handle(req, res) {
                 folder,
             },
             function(error, result) {
-                console.log(result, error)
+                console.log('callback', result, error)
             },
         );
         const {
@@ -63,7 +63,7 @@ const handler = async function handle(req, res) {
         return res.json({ response });
     } catch(err: any){
         console.log(err.message);
-        res.status(500).send("Server Error");
+        res.status(500).send("Server Error: "  + err.message);
     }
 }
 
