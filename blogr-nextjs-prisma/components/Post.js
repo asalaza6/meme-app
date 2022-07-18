@@ -230,7 +230,11 @@ class Post extends React.Component {//({img,index})=>
             this.setState({
                 image_id:this.props.img.image_id,
                 image_type: this.props.img.image_type,
-                number_likes: 0
+                image_user: this.props.img.user_name,
+                user_image: this.props.img.users?.user_image,
+                image_url: this.props.img.url,
+                number_likes: 0,
+                offline: this.props.offline
             }, () => {
                 this.checkLike();
             });
