@@ -32,24 +32,25 @@ const handler = async function handle(req, res) {
     const form = new FormData();
     form.append('file', content);
     try{
-        const cloudinaryRes = await fetch(
-            `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&folder=${folder}&signature=${signature}`,
-            {
-                method: 'POST',
-                body: form,
-            }
-        )
-          const response = await cloudinaryRes.json();
-        // const response = await cloudinary.uploader.upload(
-        //     content,
+        // const cloudinaryRes = await fetch(
+        //     `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&folder=${folder}&signature=${signature}`,
         //     {
-        //         folder,
-        //         timestamp,
-        //     },
-        //     function(error, result) {
-        //         console.log('callback', result, error)
-        //     },
-        // );
+        //         method: 'POST',
+        //         body: form,
+        //     }
+        // )
+        //   const response = await cloudinaryRes.json();
+        const response = await cloudinary.uploader.unsigned_upload(
+            content,
+            'ml_default',
+            {
+                folder,
+                timestamp,
+            },
+            function(error, result) {
+                console.log('callback', result, error)
+            },
+        );
         const {
             secure_url,
             url,
@@ -78,8 +79,8 @@ const handler = async function handle(req, res) {
                 return res.json({ user, url: secure_url || url });
             }
         } else {
-            console.log();
-            throw(Error('no secure url found (cloudinary error)!'+`https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&signature=${signature}` + JSON.stringify(response)));
+            throw(Error('no secure url found (cloudinary error)!'));
+            // throw(Error('no secure url found (cloudinary error)!'+`https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&signature=${signature}` + JSON.stringify(response)));
         }
         return res.json({ response });
     } catch(err: any){
