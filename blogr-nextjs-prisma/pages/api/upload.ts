@@ -20,11 +20,13 @@ const handler = async function handle(req, res) {
     if (!(folder === 'posts' || folder === 'profile')) {
         return res.status(500).send( `Invalid folder ${folder}`);
     }
+    const timestamp = Math.round((new Date).getTime()/1000);
     try{
         const response = await cloudinary.uploader.upload(
             content,
             {
                 folder,
+                timestamp,
             },
             function(error, result) {
                 console.log('callback', result, error)
