@@ -45,7 +45,7 @@ const handler = async function handle(req, res) {
                     }
                 });
             }
-            res.json(!liked);
+            return res.json(!liked);
         }
         return res.status(500).send("Invalid Method!");
     } catch(err: any){
