@@ -36,10 +36,10 @@ const handler = async function handle(req, res) {
         const cloudinaryRes = await fetch(
             `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&signature=${signature}`,
             {
-              method: 'POST',
-              body: form,
+                method: 'POST',
+                body: form,
             }
-          )
+        )
           const response = await cloudinaryRes.json();
         // const response = await cloudinary.uploader.upload(
         //     content,
@@ -79,7 +79,8 @@ const handler = async function handle(req, res) {
                 return res.json({ user, url: secure_url || url });
             }
         } else {
-            throw(Error('no secure url found (cloudinary error)!'));
+            console.log();
+            throw(Error('no secure url found (cloudinary error)!'+`https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&signature=${signature}` + JSON.stringify(response)));
         }
         return res.json({ response });
     } catch(err: any){
