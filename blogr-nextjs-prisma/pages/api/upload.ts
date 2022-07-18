@@ -31,10 +31,9 @@ const handler = async function handle(req, res) {
     );
     const form = new FormData();
     form.append('file', content);
-    form.append('folder', folder);
     try{
         const cloudinaryRes = await fetch(
-            `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&signature=${signature}`,
+            `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload?api_key=${process.env.API_KEY}&timestamp=${timestamp}&folder=${folder}&signature=${signature}`,
             {
                 method: 'POST',
                 body: form,
