@@ -3,13 +3,15 @@
 import prisma from '../../lib/prisma';
 import { jwtGenerator } from '../../utils/jwtGenerator';
 import bcrypt from 'bcryptjs';
+import withProtect from '../../middleware/withUser';
 
 // PUT /api/publish/:id
-export default async function handle(req, res) {
+async function handler(req, res) {
     // res.json({ test: 'test '});
     try{
         if (req.method === 'POST') {
-            const { state, followee, follower } = req.body;
+            const { state, followee, follower: bodyFollower } = req.body;
+            const { user_name: follower } = req;
             if (state) { // unfollow
                 const unFollow = await prisma.follows.delete({
                     where: {
@@ -48,3 +50,5 @@ export default async function handle(req, res) {
         res.status(500).send("Server Error");
     }
 }
+
+export default withProtect(handler);

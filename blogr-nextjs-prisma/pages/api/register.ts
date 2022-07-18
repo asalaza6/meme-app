@@ -4,12 +4,22 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import { jwtGenerator } from '../../utils/jwtGenerator';
+const validateEmail = (email) => {
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
 
 // PUT /api/publish/:id
 export default async function handle(req: NextApiRequest, res:NextApiResponse) {
     //1. destructure the req.body (name email password)
     // console.log(req, req.body);
     var { name, email, password } = req.body;
+    if (!validateEmail(email)) {
+        return res.status(401).json("Invalid email!");
+    }
     name = name.toLowerCase();
     //2. check if user exists (if user exists throw error)
     // const user = await pool.query("SELECT * FROM users WHERE user_email = $1 OR user_name = $2", [

@@ -178,21 +178,14 @@ class Post extends React.Component {//({img,index})=>
                 },
                 body:JSON.stringify(body)
             });
-            const parseRes = await response.json();
-           // console.log("parse",parseRes);
-            var id = parseRes[0].comment_id;
+            const comment = await response.json();
+
+            this.state.comments.unshift(comment);
+            this.setState({comments:this.state.comments,commentValue:""});
             
         }catch(err){
             console.log(err.message);
         }
-
-        this.state.comments.unshift({
-            comment_content:content,
-            create_timestamp:"right now",
-            comment_id: id,
-            user_name:this.props.username
-        });
-        this.setState({comments:this.state.comments,commentValue:""});
     }
     async deleteComment(comment){
         //console.log(comments,comment);
@@ -202,6 +195,7 @@ class Post extends React.Component {//({img,index})=>
                 
                 //console.log(i,this.state.comments[i].comment_content);
                 this.state.comments.splice(i,1);
+                console.log(i,this.state.comments);
                 this.setState({comments:this.state.comments});
                 break;
             }

@@ -3,13 +3,22 @@
 import prisma from '../../lib/prisma';
 import { jwtGenerator } from '../../utils/jwtGenerator';
 import bcrypt from 'bcryptjs';
+import withProtect from '../../middleware/withUser';
 
 // PUT /api/publish/:id
-export default async function handle(req, res) {
+async function handler(req, res) {
     // res.json({ test: 'test '});
     try{
         const { image: image_id } = req.headers;
         const { user_name } = req;
+        const currentPost = await prisma.images.findUnique({
+            where: {
+                image_id
+            }
+        });
+        if (currentPost.user_name !== user_name) {
+            res.status(500).send('User does not have permission to delete this post');
+        }
         const deletePost = await prisma.images.delete({
             where: {
                 image_id,
@@ -22,3 +31,5 @@ export default async function handle(req, res) {
         res.status(500).send("Server Error");
     }
 }
+
+export default withProtect(handler);

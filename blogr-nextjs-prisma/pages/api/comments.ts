@@ -57,4 +57,4 @@ const handler = async function handle(req, res) {
     }
 }
 
-export default withProtect(handler);
+export default withProtect(handler, ['GET']);

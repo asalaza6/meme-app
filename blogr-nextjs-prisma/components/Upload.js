@@ -42,7 +42,7 @@ const Upload = ()=>{
         }
         let body = {
             content:preview,
-            type: "post",
+            folder: "posts",
         }
         //console.log(body);
         try{

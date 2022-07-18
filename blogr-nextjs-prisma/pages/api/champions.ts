@@ -1,8 +1,6 @@
 // pages/api/publish/[id].ts
 
 import prisma from '../../lib/prisma';
-import { jwtGenerator } from '../../utils/jwtGenerator';
-import bcrypt from 'bcryptjs';
 
 // PUT /api/publish/:id
 export default async function handle(req, res) {
@@ -19,12 +17,12 @@ export default async function handle(req, res) {
             include: {
                 _count: {
                     select: {
-                        likes: true,
-                    }
+                        images: true,
+                    },
                 },
             },
             orderBy: {
-                likes: {
+                images: {
                     _count: 'desc',
                 }
             },

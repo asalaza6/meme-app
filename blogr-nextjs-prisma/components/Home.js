@@ -68,7 +68,7 @@ const Home = (props)=>{
     return(
         <Flex display = "flex" align="center" justifyContent="center" flexDirection="column">
             <Flex w="100%" p = "10px" direction = "row">
-                <Image m = "10px"  w = "20" src="../logo.svg"/>
+                <Image m = "10px"  w = "20" src="/static/logo.svg"/>
                 <Box flexGrow={1}>
                     
                     <Text fontSize="35px"  fontFamily="heading"  >
